@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <link rel="manifest" href="./manifest.json">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Timey–wimey, wibbly–wobbly</title>
+        <link rel="stylesheet" href="./style.css" />
+        <link rel="icon" type="image/png" href="./images/icon-32.png">
+        <link rel="apple-touch-icon" href="./images/icon-apple-512.png">
+        <meta name="theme-color" content="hsl(79, 70%, 74%)" data-status-bg>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+    </head>
+    <body data-initialized="false">
+        <form id=current-form class="current">
+            <input type=hidden id=current-id name="id" />
+            <p>
+                <label for=current-project>
+                    Project
+                </label>
+                <select id=current-project name="projectId" required>
+                </select>
+            </p>
+            <p>
+                <label for=current-task-type>
+                    Task type
+                </label>
+                <select id=current-task-type name="taskTypeId" required>
+                </select>
+            </p>
+            <p>
+                <label for=current-task>
+                    Task
+                </label>
+                <textarea id=current-task name="taskName" required rows=3></textarea>
+            </p>
+            <button
+                id=play-stop
+                type=submit
+                data-start-label="Start"
+                data-stop-label="Stop"
+            >
+            </button>
+            <p class="current-timer">
+                Running since <time id=current-start></time>.
+            </p>
+        </form>
+
+        <dialog id=login-dialog>
+            <h1>Log in</h1>
+            <form id=login-form>
+                <p>
+                    <label for=login>
+                        E-mail
+                    </label>
+                    <input type=email id=login name="login" autocomplete="email" />
+                </p>
+                <p>
+                    <label for=password>
+                        API token
+                    </label>
+                    <input type=password id=password name="password" AUTOcomplete="current-password" />
+                    You can get it from
+                    <a
+                        target="_blank"
+                        rel="noopener nofollow"
+                        href="https://my.clockodo.com/en/users/editself#grouphead_api"
+                    >
+                        your settings page
+                    </a>.
+                </p>
+
+                <button type="submit">
+                    Let me track my time
+                </button>
+            </form>
+        </dialog>
+
+        <script type="module" src="./index.mjs"></script>
+    </body>
+</html>

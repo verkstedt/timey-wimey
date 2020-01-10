@@ -1,0 +1,32 @@
+{
+  "name": "timey-wimey",
+  "version": "1.0.0",
+  "description": "Wibbly wobbly timey trackey thingy",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/verkstedt/timey-wimey.git"
+  },
+  "keywords": [
+    "time-tracking",
+    "time",
+    "tracking",
+    "clockodo"
+  ],
+  "author": "Marek ‘saji’ Augustynowicz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/verkstedt/timey-wimey/issues"
+  },
+  "homepage": "https://github.com/verkstedt/timey-wimey#readme",
+  "scripts": {
+    "test": "npm run lint",
+    "lint": "eslint --ext .js --ext .mjs --ext .jsx ."
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "stylelint": "^12.0.1",
+    "stylelint-config-recommended": "^3.0.0"
+  }
+}
