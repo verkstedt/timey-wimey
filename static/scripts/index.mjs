@@ -6,7 +6,7 @@ import {
     fetchCurrent,
     start,
     stop,
-    // fetchHistory,
+    fetchHistory,
 } from './clockodo/index.mjs';
 
 const IS_LOCALHOST = /^(localhost|127\.0\.0\.1|::1|)$/.test(window.location.hostname.toLowerCase());
@@ -130,6 +130,39 @@ function reflectCurrentEntry (entry)
     }
 }
 
+function reflectHistory (history)
+{
+    const rootEl = document.getElementById('history');
+
+    let prevDateString = null;
+    history.reverse().forEach((item) => {
+        const dateString = item.start.toLocaleDateString();
+        if (dateString !== prevDateString)
+        {
+            const heading = document.createElement('h2');
+            heading.textContent = dateString;
+            rootEl.appendChild(heading);
+        }
+        prevDateString = dateString;
+
+        const itemEl = document.getElementById('historyItem').content.cloneNode(true);
+
+        const startEl = itemEl.querySelector('.historyItem__start');
+        startEl.dateTime = item.start.toISOString();
+        startEl.textContent = item.start.toLocaleTimeString();
+
+        const endEl = itemEl.querySelector('.historyItem__end');
+        endEl.dateTime = item.end.toISOString();
+        endEl.textContent = item.end.toLocaleTimeString();
+
+        itemEl.querySelector('.historyItem__project').textContent = item.project.value;
+        itemEl.querySelector('.historyItem__taskType').textContent = item.taskType.value;
+        itemEl.querySelector('.historyItem__task').textContent = item.task.value;
+
+        rootEl.appendChild(itemEl);
+    });
+}
+
 function showLogin ()
 {
     document.getElementById('login-form').addEventListener('submit', (event) => {
@@ -157,9 +190,23 @@ async function main ()
     const projectsPromise = fetchProjects();
     const taskTypesPromise = fetchTaskTypes();
 
+    const today = new Date();
+    const startDate = new Date(
+        today.getFullYear(),
+        today.getMonth() - 2,
+        1,
+    );
+    const endDate = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate(),
+    );
+    const historyPromise = fetchHistory(startDate, endDate);
+
     reflectProjects(await projectsPromise);
     reflectTaskTypes(await taskTypesPromise);
     reflectCurrentEntry(await currentEntryPromise);
+    reflectHistory(await historyPromise);
 
     addEventListeners();
 

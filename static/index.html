@@ -47,6 +47,9 @@
             </p>
         </form>
 
+        <ul id=history>
+        </u>
+
         <dialog id=login-dialog>
             <h1>Log in</h1>
             <form id=login-form>
@@ -76,6 +79,22 @@
                 </button>
             </form>
         </dialog>
+
+        <template id=historyItem>
+            <li class="historyItem">
+                <time class="historyItem__start">
+                </time>
+                —
+                <time class="historyItem__end">
+                </time>
+                <span class="historyItem__project">
+                </span>
+                <span class="historyItem__taskType">
+                </span>
+                <span class="historyItem__task">
+                </span>
+            </li>
+        </template>
 
         <script type="module" src="./scripts/index.mjs"></script>
     </body>
