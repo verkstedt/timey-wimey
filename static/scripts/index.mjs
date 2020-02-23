@@ -9,6 +9,9 @@ import {
     fetchHistory,
 } from './clockodo/index.mjs';
 
+import './elements/history-list.mjs';
+import HistoryItem, { TAG_NAME as HISTORY_ITEM } from './elements/history-item.mjs';
+
 const IS_LOCALHOST = /^(localhost|127\.0\.0\.1|::1|)$/.test(window.location.hostname.toLowerCase());
 
 function markInitialized ()
@@ -130,36 +133,14 @@ function reflectCurrentEntry (entry)
     }
 }
 
-function reflectHistory (history)
+async function reflectHistory (history)
 {
+    await customElements.whenDefined(HISTORY_ITEM);
+
     const rootEl = document.getElementById('history');
 
-    let prevDateString = null;
     history.reverse().forEach((item) => {
-        const dateString = item.start.toLocaleDateString();
-        if (dateString !== prevDateString)
-        {
-            const heading = document.createElement('h2');
-            heading.textContent = dateString;
-            rootEl.appendChild(heading);
-        }
-        prevDateString = dateString;
-
-        const itemEl = document.getElementById('historyItem').content.cloneNode(true);
-
-        const startEl = itemEl.querySelector('.historyItem__start');
-        startEl.dateTime = item.start.toISOString();
-        startEl.textContent = item.start.toLocaleTimeString();
-
-        const endEl = itemEl.querySelector('.historyItem__end');
-        endEl.dateTime = item.end.toISOString();
-        endEl.textContent = item.end.toLocaleTimeString();
-
-        itemEl.querySelector('.historyItem__project').textContent = item.project.value;
-        itemEl.querySelector('.historyItem__taskType').textContent = item.taskType.value;
-        itemEl.querySelector('.historyItem__task').textContent = item.task.value;
-
-        rootEl.appendChild(itemEl);
+        rootEl.appendChild(HistoryItem.createFromItem(item));
     });
 }
 
@@ -203,9 +184,11 @@ async function main ()
     );
     const historyPromise = fetchHistory(startDate, endDate);
 
+
     reflectProjects(await projectsPromise);
     reflectTaskTypes(await taskTypesPromise);
     reflectCurrentEntry(await currentEntryPromise);
+
     reflectHistory(await historyPromise);
 
     addEventListeners();
