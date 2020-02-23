@@ -1,3 +1,3 @@
 {
-    "extends": "stylelint-config-recommended"
+  "extends": "@saji/stylelint-config"
 }

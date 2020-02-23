@@ -6,10 +6,10 @@ import {
     fetchCurrent,
     start,
     stop,
-    fetchHistory,
-} from './lib/clockodo/index.mjs';
+    // fetchHistory,
+} from './clockodo/index.mjs';
 
-const IS_LOCALHOST = /^(localhost|127\.0\.0\.1|::1|)$/.test(location.hostname.toLowerCase());
+const IS_LOCALHOST = /^(localhost|127\.0\.0\.1|::1|)$/.test(window.location.hostname.toLowerCase());
 
 function markInitialized ()
 {
@@ -20,7 +20,7 @@ function registerServiceWorker ()
 {
     if (
         'serviceWorker' in navigator
-        && (location.protocol === 'https:' || IS_LOCALHOST)
+        && (window.location.protocol === 'https:' || IS_LOCALHOST)
     )
     {
         navigator.serviceWorker.register('/serviceWorker.js');
@@ -58,7 +58,7 @@ function addEventListeners ()
 
 function formatTime (date)
 {
-    if (date.toISOString().split('T')[0] === (new Date).toISOString().split('T')[0])
+    if (date.toISOString().split('T')[0] === (new Date()).toISOString().split('T')[0])
     {
         return date.toLocaleTimeString();
     }
@@ -67,6 +67,7 @@ function formatTime (date)
 
 function populateSelect (element, data)
 {
+    // eslint-disable-next-line no-param-reassign
     element.innerHTML = '<option value=""></option>';
     // TODO Sort by last used
     data.forEach(({ id, name }) => {
@@ -81,7 +82,7 @@ function reflectProjects (projects)
 {
     populateSelect(
         document.getElementById('current-project'),
-        projects
+        projects,
     );
 }
 
@@ -89,7 +90,7 @@ function reflectTaskTypes (taskTypes)
 {
     populateSelect(
         document.getElementById('current-task-type'),
-        taskTypes
+        taskTypes,
     );
 }
 
@@ -131,7 +132,7 @@ function reflectCurrentEntry (entry)
 
 function showLogin ()
 {
-    document.getElementById('login-form').addEventListener('submit', event => {
+    document.getElementById('login-form').addEventListener('submit', (event) => {
         event.preventDefault();
         const data = new FormData(event.target);
         login(data.get('login'), data.get('password'));
@@ -143,7 +144,7 @@ async function main ()
 {
     registerServiceWorker();
 
-    if (! await isAuthorized())
+    if (!await isAuthorized())
     {
         showLogin();
         markInitialized();
