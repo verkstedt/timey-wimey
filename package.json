@@ -23,7 +23,7 @@
   "homepage": "https://github.com/verkstedt/timey-wimey#readme",
   "scripts": {
     "test": "npm run lint",
-    "lint": "eslint --ext .js --ext .mjs --ext .jsx .",
+    "lint": "npm-run-all --silent --parallel --print-name --aggregate-output 'lint:*'",
     "lint:js": "eslint --max-warnings=0 --ext=.js,.mjs,.cjs,.jsx,.ts,.tsx \"${@:-.}\"",
     "lint:css": "stylelint '**/*.{css,scss}'",
     "lint:sh": "{ git grep -lE '^#!/bin/(ba|da|k)?sh' ':(exclude)*.*'; git ls-files '*.sh'; } | xargs --no-run-if-empty shellcheck",
