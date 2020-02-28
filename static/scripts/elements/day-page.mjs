@@ -70,6 +70,7 @@ class DayPage extends HTMLElement
         currentForm.projects = await projectsPromise;
         currentForm.taskTypes = await taskTypesPromise;
         currentForm.entry = await currentEntryPromise;
+        currentForm.history = await historyPromise;
         content.getElementById(FORM_ID).replaceWith(currentForm);
 
         this.shadowRoot.textContent = '';

@@ -11,6 +11,7 @@ const ID_ID = 'task-id';
 const PROJECT_ID = 'projects';
 const TASK_TYPE_ID = 'task-types';
 const TASK_ID = 'task';
+const TASK_LIST_ID = 'task-list';
 const SUBMIT_ID = 'submit';
 const START_TIME_ID = 'start';
 
@@ -23,13 +24,16 @@ template.innerHTML = `
             <label for=current-task>
                 Task
             </label>
-            <input id=${TASK_ID} name="taskName" required />
+            <input id=${TASK_ID} list=${TASK_LIST_ID} name="taskName" required />
+            <datalist id=${TASK_LIST_ID}>
+            </datalist>
         </p>
         <p>
             <label for=current-task-type>
                 Task type
             </label>
             <select id=${TASK_TYPE_ID} name="taskTypeId" required>
+                <option></option>
             </select>
         </p>
         <p>
@@ -37,6 +41,7 @@ template.innerHTML = `
                 Project
             </label>
             <select id=${PROJECT_ID} name="projectId" required>
+                <option></option>
             </select>
         </p>
         <button
@@ -56,10 +61,16 @@ function createOptions (data)
 {
     const fragment = document.createDocumentFragment();
     // TODO Sort by last used
-    data.forEach(({ id, name }) => {
+    data.forEach(({ id = null, name, ...rest }) => {
         const option = document.createElement('option');
-        option.value = id;
+        if (id != null)
+        {
+            option.value = id;
+        }
         option.textContent = name;
+        Object.entries(rest).forEach(([key, value]) => {
+            option.dataset[key] = value;
+        });
         fragment.appendChild(option);
     });
     return fragment;
@@ -104,6 +115,22 @@ class CurrentForm extends HTMLElement
         window.location.reload();
     }
 
+    static handleTaskChange (event)
+    {
+        // TODO Debounce?
+        const task = event.target;
+        const option = Array.from(task.list.children)
+            .find((element) => element.textContent === task.value);
+        if (!option)
+        {
+            return;
+        }
+
+        task.form[PROJECT_ID].value = option.dataset.projectId;
+        task.form[TASK_TYPE_ID].value = option.dataset.taskTypeId;
+        // TODO Start the clock~
+    }
+
     connectedCallback ()
     {
         if (!this.isConnected)
@@ -118,12 +145,31 @@ class CurrentForm extends HTMLElement
         const project = content.getElementById(PROJECT_ID);
         const taskType = content.getElementById(TASK_TYPE_ID);
         const task = content.getElementById(TASK_ID);
+        const taskList = content.getElementById(TASK_LIST_ID);
         const submit = content.getElementById(SUBMIT_ID);
         // TODO This should be a custom element that ticks.
         const startTime = content.getElementById(START_TIME_ID);
 
         project.appendChild(createOptions(this.projects));
         taskType.appendChild(createOptions(this.taskTypes));
+        if (this.history)
+        {
+            taskList.appendChild(createOptions(Array.from(
+                this.history.reduce((map, item) => {
+                    const key = item.task.value;
+                    if (!map.has(key))
+                    {
+                        map.set(key, {
+                            name: item.task.value,
+                            projectId: item.project.id,
+                            taskTypeId: item.taskType.id,
+                        });
+                    }
+                    return map;
+                }, new Map()).values(),
+            )));
+            task.addEventListener('change', CurrentForm.handleTaskChange);
+        }
 
         const { entry } = this;
         if (entry)
