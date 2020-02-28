@@ -13,6 +13,9 @@ class HistoryList extends HTMLElement
 
     appendChild (child)
     {
+        // TODO Month wrapper
+        // TODO Week wrapper
+
         let { lastElementChild } = this.shadowRoot;
         if (
             lastElementChild == null

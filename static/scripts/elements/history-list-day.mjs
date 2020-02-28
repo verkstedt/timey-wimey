@@ -9,13 +9,13 @@ historyListDayTemplate.innerHTML = `
         <slot name="date" />
     </h2>
 
-    <ol reversed>
-        <slot />
-    </ol>
-
     <footer class="historyListDay__total">
         In total: <slot name=total />
     </footer>
+
+    <ol reversed>
+        <slot />
+    </ol>
 `;
 
 class HistoryListDay extends HTMLElement

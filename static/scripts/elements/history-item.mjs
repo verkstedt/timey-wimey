@@ -20,6 +20,7 @@ historyItemTemplate.innerHTML = `
         <span class="historyItem__task">
             <slot />
         </span>
+        <!-- TODO Resume -->
     </li>
 `;
 

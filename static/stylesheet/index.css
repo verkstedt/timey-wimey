@@ -9,10 +9,36 @@
 
 input,
 textarea,
+select,
+button
+{
+    font-size: 1em;
+}
+
+input,
+textarea,
 select
 {
     width: 100%;
     font: inherit;
+}
+
+.current
+{
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+}
+
+.current label
+{
+    display: block;
+    height: 0;
+    overflow: hidden;
+}
+
+.current p
+{
+    margin: 0.25em;;
 }
 
 :not([data-running="true"]) > .current-timer
@@ -40,6 +66,11 @@ select
 :host(history-item) li:not(:last-child)
 {
     margin-block-end: 1em;
+}
+
+.nav
+{
+    text-align: end;
 }
 
 .historyItem__project,

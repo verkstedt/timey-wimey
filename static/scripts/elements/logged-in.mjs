@@ -43,7 +43,13 @@ loginTemplate.innerHTML = `
     </dialog>
 `;
 loggedInTemplate.innerHTML = `
-    <button id=${SIGN_OUT_ID} type=button>Sign out</button>
+    <link rel="stylesheet" href="./stylesheet/index.css" />
+    <nav class="nav">
+        <a class="nav__item nav__item--link" href="https://my.clockodo.com/en/entries?listType=chron">
+            entries on clockodo.com
+        </a>
+        <button id=${SIGN_OUT_ID} class="nav__item nav__item--action" type=button>Sign out</button>
+    </nav>
     <div>
         <slot></slot>
     </div>
