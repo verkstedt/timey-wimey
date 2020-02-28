@@ -1,10 +1,12 @@
+const formatter = new Intl.DateTimeFormat(document.documentElement.lang, {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: false,
+});
+
 function formatTime (date)
 {
-    if (date.toISOString().split('T')[0] === (new Date()).toISOString().split('T')[0])
-    {
-        return date.toLocaleTimeString();
-    }
-    return date.toLocaleString();
+    return formatter.format(date);
 }
 
 export default formatTime;

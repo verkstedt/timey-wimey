@@ -1,3 +1,5 @@
+import formatTime from '../utils/formatTime.mjs';
+
 const TAG_NAME = 'history-item';
 
 const historyItemTemplate = document.createElement('template');
@@ -35,13 +37,13 @@ class HistoryItem extends HTMLElement
         const startEl = document.createElement('time');
         startEl.slot = 'start';
         startEl.dateTime = item.start;
-        startEl.textContent = item.start.toLocaleTimeString();
+        startEl.textContent = formatTime(item.start);
         el.appendChild(startEl);
 
         const endEl = document.createElement('time');
         endEl.slot = 'end';
         endEl.dateTime = item.end;
-        endEl.textContent = item.end.toLocaleTimeString();
+        endEl.textContent = formatTime(item.end);
         el.appendChild(endEl);
 
         const projectEl = document.createElement('span');
