@@ -189,6 +189,12 @@ async function login (userEmail, userToken)
     window.location.reload();
 }
 
+async function logout ()
+{
+    localStorage.clear();
+    window.location.reload();
+}
+
 // FIXME Make fetchProjects and fetchTaskTypes independent
 //       of fetchCurrent
 
@@ -259,6 +265,7 @@ async function start (projectId, taskTypeId, taskName)
 export {
     isAuthorized,
     login,
+    logout,
     fetchProjects,
     fetchTaskTypes,
     fetchCurrent,

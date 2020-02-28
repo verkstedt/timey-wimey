@@ -1,3 +1,6 @@
 {
-  "extends": "@saji/stylelint-config"
+  "extends": "@saji/stylelint-config",
+  "rules": {
+    "selector-type-no-unknown": false
+  }
 }

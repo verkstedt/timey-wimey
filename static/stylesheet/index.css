@@ -11,31 +11,7 @@ select
     font: inherit;
 }
 
-[data-initialized=false]::before
-{
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2em;
-    text-align: center;
-    background: white;
-    content: 'Loading 🤞';
-}
-
-.current
-{
-    max-width: 30em;
-    margin-right: auto;
-    margin-left: auto;
-    font-size: 1.5em;
-}
-
-:not([data-running=true]) .current-timer
+:host:not([data-running="true"]) .current-timer
 {
     visibility: hidden;
 }
