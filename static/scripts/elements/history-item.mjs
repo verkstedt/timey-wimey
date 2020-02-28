@@ -40,10 +40,19 @@ class HistoryItem extends HTMLElement
         startEl.textContent = formatTime(item.start);
         el.appendChild(startEl);
 
-        const endEl = document.createElement('time');
+        let endEl;
+        if (item.end)
+        {
+            endEl = document.createElement('time');
+            endEl.dateTime = item.end;
+            endEl.textContent = formatTime(item.end);
+        }
+        else
+        {
+            endEl = document.createElement('i');
+            endEl.textContent = 'running';
+        }
         endEl.slot = 'end';
-        endEl.dateTime = item.end;
-        endEl.textContent = formatTime(item.end);
         el.appendChild(endEl);
 
         const projectEl = document.createElement('span');
@@ -82,6 +91,10 @@ class HistoryItem extends HTMLElement
     {
         const slot = this.shadowRoot.querySelector('slot[name=end]');
         const el = slot.assignedElements()[0];
+        if (!el.dateTime)
+        {
+            return null;
+        }
         return new Date(el.dateTime);
     }
 
@@ -92,7 +105,9 @@ class HistoryItem extends HTMLElement
 
     get seconds ()
     {
-        return this.end.getTime() - this.start.getTime();
+        const startTime = this.start.getTime();
+        const endTime = (this.end || new Date()).getTime();
+        return endTime - startTime;
     }
 }
 

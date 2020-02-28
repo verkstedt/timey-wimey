@@ -84,7 +84,7 @@ function mapEntry (entry)
             value: taskName,
         },
         start: new Date(startDateString),
-        end: new Date(endDateString),
+        end: endDateString ? new Date(endDateString) : null,
     };
 }
 

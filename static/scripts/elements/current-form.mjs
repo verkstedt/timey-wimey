@@ -44,6 +44,7 @@ template.innerHTML = `
                 <option></option>
             </select>
         </p>
+        <!-- TODO If running and data is changed, show “Update“ button -->
         <button
             id=${SUBMIT_ID}
             type=submit
@@ -131,6 +132,16 @@ class CurrentForm extends HTMLElement
         // TODO Start the clock~
     }
 
+    static handleTaskInput (event)
+    {
+        const task = event.target;
+        if (task.value === '')
+        {
+            task.form[PROJECT_ID].value = '';
+            task.form[TASK_TYPE_ID].value = '';
+        }
+    }
+
     connectedCallback ()
     {
         if (!this.isConnected)
@@ -169,6 +180,7 @@ class CurrentForm extends HTMLElement
                 }, new Map()).values(),
             )));
             task.addEventListener('change', CurrentForm.handleTaskChange);
+            task.addEventListener('input', CurrentForm.handleTaskInput);
         }
 
         const { entry } = this;
