@@ -1,8 +1,11 @@
-const formatter = new Intl.DateTimeFormat(document.documentElement.lang, {
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: false,
-});
+const formatter = new Intl.DateTimeFormat(
+    document.documentElement.lang,
+    {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: false,
+    },
+);
 
 function formatTime (date)
 {
