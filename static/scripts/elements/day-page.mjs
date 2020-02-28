@@ -47,7 +47,7 @@ class DayPage extends HTMLElement
         const endDate = new Date(
             today.getFullYear(),
             today.getMonth(),
-            today.getDate(),
+            today.getDate() + 1,
         );
 
         const currentEntryPromise = fetchCurrent();
@@ -57,13 +57,11 @@ class DayPage extends HTMLElement
         const taskTypesPromise = fetchTaskTypes();
         const historyPromise = fetchHistory(startDate, endDate);
 
-        const history = await historyPromise;
-
         this.shadowRoot.textContent = '';
         const content = template.content.cloneNode(true);
 
         const historyList = new HistoryList();
-        history.reverse().forEach((item) => {
+        (await historyPromise).reverse().forEach((item) => {
             historyList.appendChild(HistoryItem.createFromItem(item));
         });
         content.getElementById(HISTORY_ID).replaceWith(historyList);

@@ -1,5 +1,9 @@
 :root
 {
+    max-width: 30em;
+    margin-inline-start: auto;
+    margin-inline-end: auto;
+    font-size: 1.2em;
     font-family: Noto Emoji Color, sans-serif;
 }
 
@@ -11,7 +15,40 @@ select
     font: inherit;
 }
 
-:host:not([data-running="true"]) .current-timer
+:not([data-running="true"]) > .current-timer
 {
     visibility: hidden;
+}
+
+:host([data-total-status="ok"]) .historyListDay__total
+{
+    color: green;
+}
+
+:host([data-total-status="over"]) .historyListDay__total
+{
+    color: orangered;
+}
+
+/* FIXME It’s fine if it’s today */
+:host([data-total-status="under"]) .historyListDay__total
+{
+    color: red;
+    font-weight: bold;
+}
+
+:host(history-item) li:not(:last-child)
+{
+    margin-block-end: 1em;
+}
+
+.historyItem__project,
+.historyItem__taskType
+{
+    display: block;
+}
+
+.historyItem__task
+{
+    font-weight: bold;
 }

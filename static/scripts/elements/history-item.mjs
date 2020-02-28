@@ -2,6 +2,7 @@ const TAG_NAME = 'history-item';
 
 const historyItemTemplate = document.createElement('template');
 historyItemTemplate.innerHTML = `
+    <link rel="stylesheet" href="./stylesheet/index.css" />
     <li class="historyItem">
         <span class="historyItem__start">
             <slot name=start></slot>

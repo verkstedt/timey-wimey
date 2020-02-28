@@ -4,6 +4,7 @@ const TAG_NAME = 'history-list-day';
 
 const historyListDayTemplate = document.createElement('template');
 historyListDayTemplate.innerHTML = `
+    <link rel="stylesheet" href="./stylesheet/index.css" />
     <h2>
         <slot name="date" />
     </h2>
@@ -12,7 +13,7 @@ historyListDayTemplate.innerHTML = `
         <slot />
     </ol>
 
-    <footer>
+    <footer class="historyListDay__total">
         In total: <slot name=total />
     </footer>
 `;
@@ -61,6 +62,14 @@ class HistoryListDay extends HTMLElement
         totalEl.dateTime = `P${totalSec}S`;
         totalEl.textContent =
             (new Date(0, 0, 0, 0, 0, totalSec)).toLocaleTimeString();
+        const totalTarget = 8 * 60 * 60; // 8h
+        const TOTAL_PRECISION = 10 * 60; // 10min
+        let status = 'ok';
+        if (Math.abs(totalTarget - totalSec) > TOTAL_PRECISION)
+        {
+            status = totalSec < totalTarget ? 'under' : 'over';
+        }
+        this.setAttribute('data-total-status', status);
     }
 
     get startDateString ()
