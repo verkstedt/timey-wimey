@@ -24,6 +24,7 @@ template.innerHTML = `
     <slot id=${HISTORY_ID}></slot>
 `;
 
+// TODO Rename?
 class DayPage extends HTMLElement
 {
     constructor (...argv)
@@ -76,6 +77,8 @@ class DayPage extends HTMLElement
         this.shadowRoot.textContent = '';
         this.shadowRoot.appendChild(content);
     }
+
+    // TODO set current entry → refetch history (?)
 }
 
 customElements.define(TAG_NAME, DayPage);
