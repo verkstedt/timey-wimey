@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 
 // TODO Make sure abstraction layer works fine with other APIs:
-//      - clockify
-//      - toggl
+//      - clockify: https://clockify.me/developers-api
+//      - toggl: https://github.com/toggl/toggl_api_docs/blob/master/toggl_api.md
 
 const URL_BASE = 'https://my.clockodo.com/api';
 

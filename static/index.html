@@ -17,7 +17,7 @@
         <script
             type="module"
             src="./scripts/index.mjs"
-            onerror="window.body.textContent = 'Some sort of failure happened 🤷'"
+            onerror="document.body.textContent = 'Some sort of failure happened 🤷'"
         ></script>
 
         <form class="o-form u-unauthorized" id=login method=POST>
@@ -112,26 +112,14 @@
                     Current
                 </dt>
                 <dd class="m-timer__value timer__value--day">
-                    <!-- TODO <time is="tw-duration" datetime="PT0H15M20S" since="…" running /> -->
                     <time
+                        is=tw-duration
                         class="a-duration"
-                        datetime="PT0H15M20S"
-                        data-running="true"
+                        datetime="PT1H5M20S"
+                        running-since="2020-05-03T20:08"
+                        precision="s"
                     >
-                        <span
-                            class="a-duration__value"
-                        >15</span>
-                        <abbr
-                            class="a-duration__unit"
-                            title="minutes"
-                        >m</abbr>
-                        <span
-                            class="a-duration__value"
-                        >20</span>
-                        <abbr
-                            class="a-duration__unit"
-                            title="seconds"
-                        >s</abbr>
+                        since 2020-04-03T20:08
                     </time>
                 </dd>
             </dl>
@@ -182,24 +170,11 @@
                         </dt>
                         <dd class="m-timer__value m-timer__value--month">
                             <time
+                                is=tw-duration
                                 class="a-duration"
                                 datetime="PT0H15M0S"
-                                data-running="true"
                             >
-                                <span
-                                    class="a-duration__value"
-                                >2</span>
-                                <abbr
-                                    class="a-duration__unit"
-                                    title="hours"
-                                >h</abbr>
-                                <span
-                                    class="a-duration__value"
-                                >15</span>
-                                <abbr
-                                    class="a-duration__unit"
-                                    title="minutes"
-                                >m</abbr>
+                                15 m
                             </time>
                         </dd>
                     </div>
@@ -212,16 +187,12 @@
                         </dt>
                         <dd class="m-timer__value m-timer__value--month">
                             <time
+                                is=tw-duration
                                 class="a-duration"
-                                datetime="PT0H8M0S"
+                                datetime="PT176H"
+                                precision="h"
                             >
-                                <span
-                                    class="a-duration__value"
-                                >8</span>
-                                <abbr
-                                    class="a-duration__unit"
-                                    title="hours"
-                                >h</abbr>
+                                176 h
                             </time>
                         </dd>
                     </div>
@@ -243,53 +214,36 @@
                         <dl class="u-v2-2 o-progressTimer"> <!-- FIXME -->
                             <div class="m-timer">
                                 <dt
-                                    class="m-timer__label m-timer__label--month"
-                                    aria-label="Time logged for 26th of April"
+                                    class="m-timer__label m-timer__label--day"
+                                    aria-label="Time logged for 26th April"
                                 >
                                     Total
                                 </dt>
-                                <dd class="m-timer__value m-timer__value--month">
+                                <dd class="m-timer__value m-timer__value--day">
                                     <time
+                                        is=tw-duration
                                         class="a-duration"
                                         datetime="PT0H15M0S"
-                                        data-running"true"
                                     >
-                                        <span
-                                            class="a-duration__value"
-                                        >2</span>
-                                        <abbr
-                                            class="a-duration__unit"
-                                            title="hours"
-                                        >h</abbr>
-                                        <span
-                                            class="a-duration__value"
-                                        >15</span>
-                                        <abbr
-                                            class="a-duration__unit"
-                                            title="minutes"
-                                        >m</abbr>
+                                        15 m
                                     </time>
                                 </dd>
                             </div>
                             <div class="m-timer">
                                 <dt
-                                    class="m-timer__label m-timer__label--month"
-                                    aria-label="time required for 26th of April"
+                                    class="m-timer__label m-timer__label--day"
+                                    aria-label="time required for April up till today"
                                 >
                                     out of
                                 </dt>
-                                <dd class="m-timer__value m-timer__value--month">
+                                <dd class="m-timer__value m-timer__value--day">
                                     <time
+                                        is=tw-duration
                                         class="a-duration"
-                                        datetime="PT0H8M0S"
+                                        datetime="PT8H"
+                                        precision="m"
                                     >
-                                        <span
-                                            class="a-duration__value"
-                                        >8</span>
-                                        <abbr
-                                            class="a-duration__unit"
-                                            title="hours"
-                                        >h</abbr>
+                                        176 h
                                     </time>
                                 </dd>
                             </div>
@@ -297,16 +251,11 @@
                         <ol reversed class="o-entryList">
                             <li class="o-entryList__item o-entryList__item--break">
                                 <time
+                                    is=tw-duration
                                     class="a-duration"
                                     datetime="PT0H15M0S"
                                 >
-                                    <span
-                                        class="a-duration__value"
-                                    >15</span>
-                                    <abbr
-                                        class="a-duration__unit"
-                                        title="minutes"
-                                    >m</abbr>
+                                    15 m
                                 </time>
                                 break
                             </li>
@@ -321,23 +270,11 @@
                                 <div class="m-entry__duration">
                                     <span class="u-sr">for</span>
                                     <time
+                                        is=tw-duration
                                         class="a-duration"
                                         datetime="PT2H0M0S"
                                     >
-                                        <span
-                                            class="a-duration__value"
-                                        >2</span>
-                                        <abbr
-                                            class="a-duration__unit"
-                                            title="hours"
-                                        >h</abbr>
-                                        <span
-                                            class="a-duration__value"
-                                        >00</span>
-                                        <abbr
-                                            class="a-duration__unit"
-                                            title="minutes"
-                                        >m</abbr>
+                                        2 h 00 m
                                     </time>
                                 </div>
                                 <div class="m-entry__timeframe a-timeframe">

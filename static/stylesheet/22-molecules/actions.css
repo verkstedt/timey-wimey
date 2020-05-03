@@ -1,3 +1,8 @@
+/*
+ * TODO Align last row to end
+ * TODO Padding, when wrapping to multiple rows
+ */
+
 .m-actions
 {
     display: flex;

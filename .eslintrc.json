@@ -3,5 +3,8 @@
   "env": {
     "node": true,
     "browser": true
+  },
+  "rules": {
+    "no-restricted-syntax": "off"
   }
 }
