@@ -20,7 +20,7 @@
             onerror="document.body.textContent = 'Some sort of failure happened 🤷'"
         ></script>
 
-        <form class="o-form u-unauthorized" id=login method=POST>
+        <form class="o-form m-loader__wrapper u-unauthorized" id=login method=POST>
             <p class="m-formElement">
                 <label class="m-formElement__label" for=login_login>
                     E-Mail
@@ -64,9 +64,18 @@
                     Let me track my time
                 </button>
             </div>
+
+            <div
+                hidden
+                data-loader
+                class="m-loader__animation"
+                aria-live="polite"
+            >
+                Things are happening…
+            </div>
         </form>
 
-        <form class="o-form u-authorized" id=current method=POST>
+        <form class="o-form m-loader__wrapper u-authorized" id=current method=POST>
             <p class="m-formElement">
                 <label class="m-formElement__label" for=current_task>
                     Task
@@ -152,6 +161,15 @@
                 >
                     Start new
                 </button>
+            </div>
+
+            <div
+                hidden
+                data-loader
+                class="m-loader__animation"
+                aria-live="polite"
+            >
+                Things are happening…
             </div>
         </form>
 

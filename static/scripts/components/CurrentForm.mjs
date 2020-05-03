@@ -40,10 +40,11 @@ class CurrentForm
 
         const { project, taskType, task } = this.getFormData();
 
-        // TODO Processing feedback
-        const currentEntry =
-            await this.api.start(project, taskType, task);
-        await this.state.set('currentEntry', currentEntry);
+        await this.processUI(async () => {
+            const currentEntry =
+                await this.api.start(project, taskType, task);
+            await this.state.set('currentEntry', currentEntry);
+        });
     }
 
     async handleChange (event)
@@ -57,12 +58,13 @@ class CurrentForm
             throw new Error('Cannot change — no task running.');
         }
 
-        // TODO Processing feedback
-        const currentEntry = await this.api.update(
-            currentEntryId,
-            { project, taskType, task },
-        );
-        await this.state.set('currentEntry', currentEntry);
+        await this.processUI(async () => {
+            const currentEntry = await this.api.update(
+                currentEntryId,
+                { project, taskType, task },
+            );
+            await this.state.set('currentEntry', currentEntry);
+        });
     }
 
     async handleStop (event)
@@ -70,9 +72,26 @@ class CurrentForm
         event.preventDefault();
 
         const currentEntryId = this.state.get('currentEntry').id;
-        // TODO Processing feedback
-        await this.api.stop(currentEntryId);
-        await this.state.set('currentEntry', null);
+
+        await this.processUI(async () => {
+            await this.api.stop(currentEntryId);
+            await this.state.set('currentEntry', null);
+        });
+    }
+
+    async processUI (job)
+    {
+        const loader = this.root.querySelector('[data-loader]');
+        loader.hidden = false;
+
+        try
+        {
+            await job();
+        }
+        finally
+        {
+            loader.hidden = true;
+        }
     }
 
     reflectState ()
