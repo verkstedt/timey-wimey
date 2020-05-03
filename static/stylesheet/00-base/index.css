@@ -1,0 +1,52 @@
+:root
+{
+    /* sizes */
+    --line-height: 1em;
+    --vertical-spacing: var(--line-height);
+    --horizontal-spacing: 3ch;
+
+    /* colours */
+    --colour-primary: green;
+    --colour-danger: red;
+    --colour-error: var(--colour-danger);
+    --colour-warning: orange;
+
+    box-sizing: border-box;
+    font-size: 1.3em;
+    font-family: sans-serif;
+}
+
+*,
+*::before,
+*::after
+{
+    box-sizing: inherit;
+}
+
+input,
+select,
+textarea,
+button
+{
+    font: inherit;
+}
+
+p:not(:last-child),
+dl:not(:last-child),
+ul:not(:last-child),
+ol:not(:last-child),
+li:not(:last-child)
+{
+    margin-block-start: 0;
+    margin-block-end: var(--vertical-spacing);
+}
+
+p:last-child,
+dl:last-child,
+ul:last-child,
+ol:last-child,
+li:last-child
+{
+    margin-block-start: 0;
+    margin-block-end: 0;
+}

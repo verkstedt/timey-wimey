@@ -1,0 +1,9 @@
+.a-button--primary
+{
+    font-weight: bold;
+}
+
+.a-button--destructive
+{
+    color: var(--colour-danger);
+}

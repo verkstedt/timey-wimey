@@ -26,7 +26,5 @@ class ServiceWorker extends HTMLElement
     }
 }
 
-customElements.define(TAG_NAME, ServiceWorker);
-
 export { TAG_NAME };
 export default ServiceWorker;
