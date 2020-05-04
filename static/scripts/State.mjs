@@ -1,3 +1,5 @@
+import deepAssign from './utils/deepAssign.mjs';
+
 const DEFAULT_STATE = {
     auth: {
         login: null,
@@ -41,13 +43,12 @@ class State
         return this.state[name];
     }
 
-    // TODO Change to set(newStateDiff)
-    async set (name, value)
+    // TODO If nested → your code is bad and you should feel bad
+    async set (newStateDiff)
     {
         const oldState = this.state;
         const oldStateJson = JSON.stringify(oldState);
-        const newState = JSON.parse(oldStateJson);
-        newState[name] = value;
+        const newState = deepAssign({}, oldState, newStateDiff);
 
         if (JSON.stringify(newState) !== oldStateJson)
         {

@@ -80,7 +80,7 @@ class App
         }
 
         const currentEntry = await this.api.fetchCurrent();
-        await this.state.set('currentEntry', currentEntry);
+        await this.state.set({ currentEntry });
 
         const projects = await this.api.fetchProjects();
         const taskTypes = await this.api.fetchTaskTypes();
@@ -94,7 +94,7 @@ class App
         });
         // TODO Group by client + project
         // TODO Add “Frequently used“ group
-        await this.state.set('projectValues', projectValues);
+        await this.state.set({ projectValues });
     }
 
     reflectState ()

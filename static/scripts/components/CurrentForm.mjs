@@ -43,7 +43,7 @@ class CurrentForm
         await this.processUI(async () => {
             const currentEntry =
                 await this.api.start(project, taskType, task);
-            await this.state.set('currentEntry', currentEntry);
+            await this.state.set({ currentEntry });
         });
     }
 
@@ -63,7 +63,7 @@ class CurrentForm
                 currentEntryId,
                 { project, taskType, task },
             );
-            await this.state.set('currentEntry', currentEntry);
+            await this.state.set({ currentEntry });
         });
     }
 
@@ -75,7 +75,7 @@ class CurrentForm
 
         await this.processUI(async () => {
             await this.api.stop(currentEntryId);
-            await this.state.set('currentEntry', null);
+            await this.state.set({ currentEntry: null });
         });
     }
 
@@ -97,7 +97,7 @@ class CurrentForm
     reflectState ()
     {
         Array.from(this.root.querySelectorAll('select[name="project"]'))
-            .forEach(setSelectValues.bind(null, this.state.get('projectValues')));
+            .forEach(setSelectValues.bind(null, this.state.get('projectValues') || []));
 
         const currentEntry = this.state.get('currentEntry');
         const running = Boolean(currentEntry);

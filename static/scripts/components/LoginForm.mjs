@@ -36,7 +36,7 @@ class LoginForm
 
         if (await this.api.login(login, token))
         {
-            await this.state.set('auth', { login, token });
+            await this.state.set({ auth: { login, token } });
         }
     }
 }
