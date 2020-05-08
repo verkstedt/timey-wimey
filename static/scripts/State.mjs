@@ -43,9 +43,9 @@ class State
         this.storage.set(this.state);
     }
 
-    get (name)
+    get ()
     {
-        return this.state[name];
+        return this.state;
     }
 
     // TODO If nested → your code is bad and you should feel bad

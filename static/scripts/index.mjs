@@ -6,6 +6,7 @@ import Api from './api/clockodo.mjs';
 import App from './components/App.mjs';
 
 const state = new State(new Storage('state'));
-const api = new Api(state.get('auth').login, state.get('auth').token);
+const { auth: { login, token } } = state.get();
+const api = new Api(login, token);
 const app = new App(state, api);
 app.bind(document.body);

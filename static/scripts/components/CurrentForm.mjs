@@ -52,7 +52,9 @@ class CurrentForm
         event.preventDefault();
 
         const { project, taskType, task } = this.getFormData();
-        const currentEntryId = this.state.get('currentEntry').id;
+        const {
+            currentEntry: { id: currentEntryId },
+        } = this.state.get();
         if (currentEntryId == null)
         {
             throw new Error('Cannot change — no task running.');
@@ -71,7 +73,9 @@ class CurrentForm
     {
         event.preventDefault();
 
-        const currentEntryId = this.state.get('currentEntry').id;
+        const {
+            currentEntry: { id: currentEntryId },
+        } = this.state.get();
 
         await this.processUI(async () => {
             await this.api.stop(currentEntryId);
@@ -96,10 +100,14 @@ class CurrentForm
 
     reflectState ()
     {
-        Array.from(this.root.querySelectorAll('select[name="project"]'))
-            .forEach(setSelectValues.bind(null, this.state.get('projectValues') || []));
+        const {
+            projectValues = [],
+            currentEntry,
+        } = this.state.get();
 
-        const currentEntry = this.state.get('currentEntry');
+        Array.from(this.root.querySelectorAll('select[name="project"]'))
+            .forEach(setSelectValues.bind(null, projectValues));
+
         const running = Boolean(currentEntry);
 
         const {

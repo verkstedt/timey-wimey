@@ -1,3 +1,5 @@
+import areEqual from '../utils/areEqual.mjs';
+
 import LoginForm from './LoginForm.mjs';
 import CurrentForm from './CurrentForm.mjs';
 
@@ -53,7 +55,9 @@ class App
 
     async handleStateChange (oldState)
     {
-        if (JSON.stringify(oldState.auth) !== JSON.stringify(this.state.get('auth')))
+        const { auth: oldAuth } = oldState;
+        const { auth: newAuth } = this.state.get();
+        if (!areEqual(oldAuth, newAuth))
         {
             this.refreshState();
             return;
@@ -67,8 +71,8 @@ class App
 
     isAuthorized ()
     {
-        const auth = this.state.get('auth');
-        return (auth.login != null && auth.token != null);
+        const { auth: { login, token } } = this.state.get();
+        return (login != null && token != null);
     }
 
     async refreshState ()
