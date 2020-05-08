@@ -1,4 +1,5 @@
 import deepAssign from './utils/deepAssign.mjs';
+import deepFreeze from './utils/deepFreeze.mjs';
 
 const DEFAULT_STATE = {
     auth: {
@@ -23,14 +24,18 @@ const DEFAULT_STATE = {
 
 class State
 {
-    state = null;
+    state;
 
     callbacks = []
 
     constructor (storage)
     {
         this.storage = storage;
-        this.state = this.storage.get() || DEFAULT_STATE;
+        this.state = deepFreeze(deepAssign(
+            {},
+            DEFAULT_STATE,
+            this.storage.get() || {},
+        ));
     }
 
     async persist ()
@@ -52,7 +57,7 @@ class State
 
         if (JSON.stringify(newState) !== oldStateJson)
         {
-            this.state = newState;
+            this.state = deepFreeze(newState);
             await Promise.all(
                 this.callbacks.map((callback) => callback(oldState)),
             );
@@ -62,7 +67,7 @@ class State
 
     async clear ()
     {
-        this.state = DEFAULT_STATE;
+        this.state = deepFreeze(DEFAULT_STATE);
         this.persist();
     }
 

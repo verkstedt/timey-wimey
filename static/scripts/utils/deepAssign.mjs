@@ -1,13 +1,10 @@
+import isPlainObject from './isPlainObject.mjs';
+
 function deepAssign (...args)
 {
     const definedArgs = args.filter((a) => a !== undefined);
 
-    const hasNonObjects = definedArgs.some(
-        (a) => (
-            a === null
-            || Object.getPrototypeOf(a) !== Object.prototype
-        ),
-    );
+    const hasNonObjects = !definedArgs.every(isPlainObject);
 
     if (hasNonObjects)
     {
