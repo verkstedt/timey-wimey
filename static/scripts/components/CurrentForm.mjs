@@ -108,6 +108,10 @@ class CurrentForm
         Array.from(this.root.querySelectorAll('select[name="project"]'))
             .forEach(setSelectValues.bind(null, projectValues));
 
+        const taskValues = this.getTasksWithUsage();
+        Array.from(this.root.querySelectorAll('datalist[name="task__list"]'))
+            .forEach(setSelectValues.bind(null, taskValues));
+
         const running = Boolean(currentEntry);
 
         const {
@@ -154,6 +158,26 @@ class CurrentForm
             taskType,
             task,
         };
+    }
+
+    getTasksWithUsage ()
+    {
+        const { history } = this.state.get();
+
+        const tasksUsage = Object.values(history).reduce(
+            (carry, { task: { value: taskName } }) => ({
+                ...carry,
+                // TODO Case insensitive
+                [taskName]: (carry[taskName] || 0) + 1,
+            }),
+            {},
+        );
+
+        const sortedTasksUsage = Object.fromEntries(
+            Object.entries(tasksUsage).sort(([, a], [, b]) => b - a),
+        );
+
+        return (Object.keys(sortedTasksUsage));
     }
 }
 

@@ -2,11 +2,19 @@ function createOptionsDocumentFragment (document, values)
 {
     const options = document.createDocumentFragment();
     options.appendChild(document.createElement('option'));
-    Array.from(Object.entries(values)).forEach(
-        ([value, label]) => {
+    const valuesArray =
+        Array.isArray(values)
+            ? values
+            : Array.from(Object.entries(values));
+    valuesArray.forEach(
+        (row) => {
+            const [value, label] = Array.isArray(row) ? row : [row];
             const option = document.createElement('option');
             option.value = value;
-            option.textContent = label;
+            if (label !== null && label !== '')
+            {
+                option.textContent = label;
+            }
             options.appendChild(option);
         },
     );
