@@ -111,16 +111,20 @@ class CurrentForm
         const running = Boolean(currentEntry);
 
         const {
+            task: { value: task } = {},
             project: { id: projectId } = {},
             taskType: { id: taskTypeId } = {},
+            start: startString,
         } = currentEntry || {};
 
         let taskValue = '';
         let projectValue = '';
+        let startValue = '';
         if (running)
         {
-            taskValue = currentEntry.task.value;
+            taskValue = task;
             projectValue = `${projectId}+${taskTypeId}`;
+            startValue = new Date(startString);
         }
 
 
@@ -128,7 +132,8 @@ class CurrentForm
 
         this.root.querySelector('[name=project]').value = projectValue;
 
-        // TODO Update duration
+        const duration = this.root.querySelector('[name=duration]');
+        duration.runningSince = startValue;
 
         this.root.querySelector('[name=stop]').disabled = !running;
 
