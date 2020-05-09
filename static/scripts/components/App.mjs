@@ -88,6 +88,7 @@ class App
 
         const projects = await this.api.fetchProjects();
         const taskTypes = await this.api.fetchTaskTypes();
+        // FIXME Not all project × taskType combinations make sense
         const projectValues = {};
         taskTypes.forEach((taskType) => {
             projects.forEach((project) => {

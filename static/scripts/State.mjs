@@ -49,6 +49,7 @@ class State
     }
 
     // TODO If nested → your code is bad and you should feel bad
+    // TODO Accumulate
     async set (newStateDiff)
     {
         const oldState = this.state;
@@ -57,6 +58,7 @@ class State
 
         if (JSON.stringify(newState) !== oldStateJson)
         {
+            // TODO JSON.parse(stringify()) to make sure it’s fine
             this.state = deepFreeze(newState);
             await Promise.all(
                 this.callbacks.map((callback) => callback(oldState)),
