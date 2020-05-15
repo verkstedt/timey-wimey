@@ -3,11 +3,12 @@
     /* sizes */
     --line-height: 1em;
     --vertical-spacing: var(--line-height);
-    --horizontal-spacing: 3ch;
+    --horizontal-spacing: 1.5rem;
 
     /* colours */
     --colour-text: hsl(0, 0%, 15%);
     --colour-secondary-text: hsl(0, 0%, 35%);
+    --colour-background: hsl(0, 0%, 98%);
     --colour-success: green;
     --colour-warning: orange;
     --colour-danger: red;
@@ -17,6 +18,7 @@
     color: var(--colour-text);
     font-size: 1.3em;
     font-family: sans-serif;
+    background: var(--colour-background);
 }
 
 *,
