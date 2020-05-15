@@ -8,6 +8,8 @@ const DATE_TIME = Symbol('date-time');
 
 const DEFAULT_PRECISION = 'm';
 
+const UPDATE_INTERVAL_MS = 500;
+
 const UNITS = new Map(Object.entries({
     d: { title: 'days', seconds: 60 * 60 * 24 },
     h: { title: 'hours', seconds: 60 * 60 },
@@ -46,7 +48,9 @@ class TwDuration extends HTMLTimeElement
 {
     static observedAttributes = ['date-time', 'precision', 'running-since'];
 
-    updateId;
+    updateTimeoutId;
+
+    updateAnimationFrameId;
 
     [PRECISION] = DEFAULT_PRECISION;
 
@@ -316,6 +320,27 @@ class TwDuration extends HTMLTimeElement
         this.update(parts, context);
     }
 
+    queueUpdate ()
+    {
+        this.updateTimeoutId = setTimeout(
+            () => {
+                if (this.updateAnimationFrameId)
+                {
+                    return;
+                }
+
+                this.updateAnimationFrameId = requestAnimationFrame(
+                    () => {
+                        this.updateFromRunningSince();
+                        this.updateAnimationFrameId = null;
+                        this.queueUpdate();
+                    },
+                );
+            },
+            UPDATE_INTERVAL_MS,
+        );
+    }
+
     startUpdating ()
     {
         if (!this.isConnected)
@@ -323,24 +348,16 @@ class TwDuration extends HTMLTimeElement
             return;
         }
 
-        const updateTick = () => {
-            this.updateFromRunningSince();
-            // FIXME-prio-2 Memory leak here?
-            this.updateId = setTimeout(
-                () => {
-                    this.updateId =
-                            requestAnimationFrame(updateTick);
-                },
-                500,
-            );
-        };
-        this.updateId = requestAnimationFrame(updateTick);
+        this.stopUpdating();
+
+        this.updateFromRunningSince();
+        this.queueUpdate();
     }
 
     stopUpdating ()
     {
-        clearTimeout(this.updateId);
-        cancelAnimationFrame(this.updateId);
+        clearTimeout(this.updateTimeoutId);
+        cancelAnimationFrame(this.updateAnimationFrameId);
     }
 }
 
