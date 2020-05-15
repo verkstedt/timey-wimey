@@ -22,6 +22,16 @@ const DEFAULT_STATE = {
     },
 };
 
+function jsonReplacer (_, value)
+{
+    if (value instanceof Date)
+    {
+        return value.toISOString();
+    }
+
+    return value;
+}
+
 class State
 {
     state;
@@ -53,13 +63,14 @@ class State
     async set (newStateDiff)
     {
         const oldState = this.state;
-        const oldStateJson = JSON.stringify(oldState);
+        const oldStateJson = JSON.stringify(oldState, jsonReplacer);
         const newState = deepAssign({}, oldState, newStateDiff);
+        const newStateJson = JSON.stringify(newState, jsonReplacer);
 
-        if (JSON.stringify(newState) !== oldStateJson)
+        if (newStateJson !== oldStateJson)
         {
-            // TODO JSON.parse(stringify()) to make sure it’s fine
-            this.state = deepFreeze(newState);
+            const newStateReParsed = JSON.parse(newStateJson);
+            this.state = deepFreeze(newStateReParsed);
             await Promise.all(
                 this.callbacks.map((callback) => callback(oldState)),
             );
