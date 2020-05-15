@@ -58,7 +58,7 @@ class TwDuration extends HTMLTimeElement
     {
         super();
 
-        const dateTimeAttr = this.getAttribute('date-time');
+        const dateTimeAttr = this.getAttribute('datetime');
         if (!isAttributeEmpty(dateTimeAttr))
         {
             this[DATE_TIME] = dateTimeAttr;
