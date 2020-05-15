@@ -1,0 +1,4 @@
+.a-timeframe__from::after
+{
+    content: ' —';
+}

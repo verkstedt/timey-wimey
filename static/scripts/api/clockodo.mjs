@@ -227,6 +227,15 @@ class ApiClockodo
         return this.mapEntry(result.running);
     }
 
+    async fetchCustomers ()
+    {
+        if (this.cache.customers.size === 0)
+        {
+            await this.fetchCurrent();
+        }
+        return this.cache.customers;
+    }
+
     async fetchProjects ()
     {
         if (this.cache.projects.size === 0)

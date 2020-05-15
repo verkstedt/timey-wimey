@@ -2,6 +2,7 @@ import areEqual from '../utils/areEqual.mjs';
 
 import LoginForm from './LoginForm.mjs';
 import CurrentForm from './CurrentForm.mjs';
+import History from './History.mjs';
 
 class App
 {
@@ -10,6 +11,10 @@ class App
     api;
 
     loginForm;
+
+    currentForm;
+
+    history;
 
     root = null;
 
@@ -23,6 +28,7 @@ class App
 
         this.loginForm = new LoginForm(this.state, this.api);
         this.currentForm = new CurrentForm(this.state, this.api);
+        this.history = new History(this.state, this.api);
 
         this.handleStateChange = this.handleStateChange.bind(this);
 
@@ -37,6 +43,10 @@ class App
 
         this.loginForm.bind(this.root.querySelector('#login'));
         this.currentForm.bind(this.root.querySelector('#current'));
+        this.history.bind(
+            this.root.querySelector('#history'),
+            this.root.querySelector('#month-tpl'),
+        );
         // TODO Log out
 
         this.reflectState();
@@ -85,14 +95,18 @@ class App
 
         const currentEntry = await this.api.fetchCurrent();
 
+        const customers = await this.api.fetchCustomers();
         const projects = await this.api.fetchProjects();
         const taskTypes = await this.api.fetchTaskTypes();
         // FIXME Not all project × taskType combinations make sense
         const projectValues = {};
         taskTypes.forEach((taskType) => {
             projects.forEach((project) => {
+                const customer = Array.from(customers.values()).find(
+                    ({ projectIds }) => projectIds.has(project.id),
+                );
                 const key = `${project.id}+${taskType.id}`;
-                const name = `${taskType.name} (${project.name})`;
+                const name = `${taskType.name}, ${project.name}, ${customer.name}`;
                 projectValues[key] = name;
             });
         });
@@ -101,8 +115,8 @@ class App
 
         const today = new Date();
         const startOfLastMonth = new Date(today.toDateString());
-        startOfLastMonth.setDate(0);
-        startOfLastMonth.setDate(0);
+        startOfLastMonth.setDate(1);
+        startOfLastMonth.setMonth(startOfLastMonth.getMonth() - 1);
         const history =
             await this.api.fetchHistory(startOfLastMonth, today);
 
@@ -117,6 +131,7 @@ class App
         if (authorized)
         {
             this.currentForm.reflectState();
+            this.history.reflectState();
         }
     }
 }

@@ -1,0 +1,23 @@
+@supports (flex-wrap: wrap)
+{
+    .o-progressTimer
+    {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .o-progressTimer__label--from
+    {
+        display: none;
+    }
+
+    .o-progressTimer__label--to
+    {
+        display: none;
+    }
+
+    .o-progressTimer__value--to::before
+    {
+        content: ' /';
+    }
+}

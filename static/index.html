@@ -175,175 +175,162 @@
             </div>
         </form>
 
-        <article class="u-v2-1 u-authorized">
-            <section>
-                <h2>
-                    <time datetime="2020-04">April</time>
-                </h2>
-                <dl class="u-v2-2 o-progressTimer"> <!-- FIXME -->
-                    <div class="m-timer">
-                        <dt
-                            class="m-timer__label m-timer__label--month"
-                            aria-label="Time logged for April"
-                        >
-                            Total
-                        </dt>
-                        <dd class="m-timer__value m-timer__value--month">
-                            <time
-                                is=tw-duration
-                                class="a-duration"
-                                datetime="PT0H15M0S"
-                            >
-                                15 m
-                            </time>
-                        </dd>
-                    </div>
-                    <div class="m-timer">
-                        <dt
-                            class="m-timer__label m-timer__label--month"
-                            aria-label="time required for April up till today"
-                        >
-                            out of
-                        </dt>
-                        <dd class="m-timer__value m-timer__value--month">
-                            <time
-                                is=tw-duration
-                                class="a-duration"
-                                datetime="PT176H"
-                                precision="h"
-                            >
-                                176 h
-                            </time>
-                        </dd>
-                    </div>
-                </dl>
-                <article>
-                    <section>
-                        <h3>
-                            <time datetime="2020-04-26">Today</time>
-                        </h3>
-                        <div class="u-v3 m-actions">
-                            <button
-                                class="a-button a-button--primary m-actions__action"
-                                type=button
-                                aria-label="Add entry on 26th April"
-                            >
-                                Add
-                            </button>
-                        </div>
-                        <dl class="u-v2-2 o-progressTimer"> <!-- FIXME -->
-                            <div class="m-timer">
-                                <dt
-                                    class="m-timer__label m-timer__label--day"
-                                    aria-label="Time logged for 26th April"
+        <article class="u-authorized">
+            <!-- TODO Update aria-labels -->
+            <template id="month-tpl">
+                <section>
+                    <h2>
+                        <time name="month-name"></time>
+                    </h2>
+                    <template name="day-tpl">
+                        <section>
+                            <h3>
+                                <time name="day-name"></time>
+                            </h3>
+                            <div class="u-v3 m-actions">
+                                <button
+                                    class="a-button a-button--primary m-actions__action"
+                                    type=button
+                                    aria-label="Add entry on 26th April"
                                 >
-                                    Total
-                                </dt>
-                                <dd class="m-timer__value m-timer__value--day">
-                                    <time
-                                        is=tw-duration
-                                        class="a-duration"
-                                        datetime="PT0H15M0S"
-                                    >
-                                        15 m
-                                    </time>
-                                </dd>
+                                    Add
+                                </button>
                             </div>
-                            <div class="m-timer">
-                                <dt
-                                    class="m-timer__label m-timer__label--day"
-                                    aria-label="time required for April up till today"
-                                >
-                                    out of
-                                </dt>
-                                <dd class="m-timer__value m-timer__value--day">
-                                    <time
-                                        is=tw-duration
-                                        class="a-duration"
-                                        datetime="PT8H"
-                                        precision="m"
+                            <dl class="o-progressTimer">
+                                <div class="m-timer">
+                                    <dt
+                                        class="m-timer__label m-timer__label--day o-progressTimer__label o-progressTimer__label--from"
+                                        aria-label="Time logged for 26th April"
                                     >
-                                        176 h
-                                    </time>
-                                </dd>
-                            </div>
-                        </dl>
-                        <ol reversed class="o-entryList">
-                            <li class="o-entryList__item o-entryList__item--break">
-                                <time
-                                    is=tw-duration
-                                    class="a-duration"
-                                    datetime="PT0H15M0S"
-                                >
-                                    15 m
-                                </time>
-                                break
-                            </li>
-                            <li class="o-entryList__item o-entryList__item--entry m-entry">
-                                <span class="m-entry__task">
-                                    Performance improvements
-                                </span>
-                                <span class="u-sr">filed under</span>
-                                <span class="m-entry__project">
-                                    Project X, Client Bar
-                                </span>
-                                <div class="m-entry__duration">
-                                    <span class="u-sr">for</span>
-                                    <time
-                                        is=tw-duration
-                                        class="a-duration"
-                                        datetime="PT2H0M0S"
-                                    >
-                                        2 h 00 m
-                                    </time>
+                                        Total
+                                    </dt>
+                                    <dd class="m-timer__value m-timer__value--day o-progressTimer__value o-progressTimer__value--from">
+                                        <!-- TODO Update with ticking clock -->
+                                        <time
+                                            is=tw-duration
+                                            name="total-value"
+                                            class="a-duration"
+                                        ></time>
+                                    </dd>
                                 </div>
-                                <div class="m-entry__timeframe a-timeframe">
-                                    <span class="u-sr">from</span>
-                                    <time
-                                        class="a-timeframe__from"
-                                        datetime="2020-04-26T10:00:00"
+                                <div class="m-timer">
+                                    <dt
+                                        class="m-timer__label m-timer__label--day o-progressTimer__label o-progressTimer__label--to"
+                                        aria-label="time required for 1st of April"
                                     >
-                                        10:00
-                                    </time>
-                                    <span class="u-sr">to</span>
-                                    <time
-                                        class="a-timeframe__to"
-                                        datetime="2020-04-26T12:00:00"
-                                    >
-                                        12:00
-                                    </time>
+                                        out of
+                                    </dt>
+                                    <dd class="m-timer__value m-timer__value--day o-progressTimer__value o-progressTimer__value--to">
+                                        <!-- TODO Obtain real value -->
+                                        <time
+                                            is=tw-duration
+                                            name="total-expected"
+                                            class="a-duration"
+                                            datetime="PT8H"
+                                            precision="m"
+                                        ></time>
+                                    </dd>
                                 </div>
-                                <div class="m-actions">
-                                    <button
-                                        class="a-button a-button--destructive m-actions__action"
-                                        type=button
+                            </dl>
+                            <template name="entry-tpl">
+                                <li class="o-entryList__item o-entryList__item--entry m-entry">
+                                    <h4 name="entry-task" class="m-entry__task"></h4>
+                                    <span class="u-sr">filed under</span>
+                                    <span name="entry-project" class="m-entry__project"></span>
+                                    <div class="m-entry__times">
+                                        <div class="m-entry__duration">
+                                            <span class="u-sr">for</span>
+                                            <time
+                                                is=tw-duration
+                                                name="entry-duration"
+                                                class="a-duration"
+                                            ></time>
+                                        </div>
+                                        <div class="m-entry__timeframe a-timeframe">
+                                            <span class="u-sr">from</span>
+                                            <time
+                                                class="a-timeframe__from"
+                                                name="entry-start"
+                                            ></time>
+                                            <span class="u-sr">to</span>
+                                            <time
+                                                class="a-timeframe__to"
+                                                name="entry-end"
+                                            ></time>
+                                        </div>
+                                    </div>
+                                    <div class="u-v2-2 m-actions">
+                                        <button
+                                            class="a-button a-button--destructive m-actions__action"
+                                            type=button
+                                        >
+                                            Delete
+                                        </button>
+                                        <button
+                                            class="u-v3 a-button m-actions__action"
+                                            type=button
+                                        >
+                                            Split
+                                        </button>
+                                        <button
+                                            class="u-v3 a-button m-actions__action"
+                                            type=button
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            class="a-button a-button--primary m-actions__action"
+                                            type=button
+                                        >
+                                            Continue
+                                        </button>
+                                    </div>
+                                </li>
+                            </template>
+                            <ol name="entries" reversed class="o-entryList"></ol>
+                        </section>
+                    </template>
+                    <details open>
+                        <summary class="a-detailsSummary">
+                            <dl class="o-progressTimer">
+                                <div class="m-timer">
+                                    <dt
+                                        class="m-timer__label m-timer__label--month"
+                                        aria-label="Time logged for April"
                                     >
-                                        Delete
-                                    </button>
-                                    <button
-                                        class="u-v3 a-button m-actions__action"
-                                        type=button
-                                    >
-                                        Split
-                                    </button>
-                                    <button
-                                        class="u-v3 a-button m-actions__action"
-                                        type=button
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        class="a-button a-button--primary m-actions__action"
-                                        type=button
-                                    >
-                                        Continue
-                                    </button>
+                                        Total
+                                    </dt>
+                                    <dd class="m-timer__value m-timer__value--month">
+                                        <!-- TODO Update with ticking clock -->
+                                        <time
+                                            is=tw-duration
+                                            name="total-value"
+                                            class="a-duration"
+                                        ></time>
+                                    </dd>
                                 </div>
-                            </li>
-                        </ol>
-                    </section>
-                </article>
-            </section>
+                                <div class="m-timer u-v2-2">
+                                    <dt
+                                        class="m-timer__label m-timer__label--month"
+                                        aria-label="time required for April up till today"
+                                    >
+                                        out of
+                                    </dt>
+                                    <dd class="m-timer__value m-timer__value--month">
+                                        <time
+                                            is=tw-duration
+                                            name="total-expected"
+                                            class="a-duration"
+                                        ></time>
+                                    </dd>
+                                </div>
+                            </dl>
+                        </summary>
+                        <div name="days"></div>
+                    </details>
+                </section>
+            </template>
+            <div id=history></div>
         </article>
     </body>
 </html>

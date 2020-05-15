@@ -109,6 +109,7 @@ class CurrentForm
             .forEach(setSelectValues.bind(null, projectValues));
 
         const taskValues = this.getTasksWithUsage();
+        // TODO Make it so choosing one also sets Project
         Array.from(this.root.querySelectorAll('datalist[name="task__list"]'))
             .forEach(setSelectValues.bind(null, taskValues));
 

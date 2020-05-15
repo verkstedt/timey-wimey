@@ -1,0 +1,13 @@
+.a-detailsSummary
+{
+    position: relative;
+}
+
+.a-detailsSummary::-webkit-details-marker
+{
+    position: absolute;
+
+    /* FIXME Less eyeballing */
+    top: calc(1vh - 0.75ex);
+    left: -1.5ex;
+}

@@ -1,11 +1,11 @@
 /* Unimplemented things, by planned versions */
-.u-v2-1 { display: none !important; }
 .u-v2-2 { display: none !important; }
 .u-v3 { display: none !important; }
 .u-v4 { display: none !important; }
 
 .u-sr
 {
+    position: absolute;
     display: inline-block;
     width: 0;
     height: 0;

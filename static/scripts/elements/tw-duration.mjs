@@ -11,7 +11,6 @@ const DEFAULT_PRECISION = 'm';
 const UPDATE_INTERVAL_MS = 500;
 
 const UNITS = new Map(Object.entries({
-    d: { title: 'days', seconds: 60 * 60 * 24 },
     h: { title: 'hours', seconds: 60 * 60 },
     m: { title: 'minutes', seconds: 60 },
     s: { title: 'seconds', seconds: 1 },
@@ -27,6 +26,15 @@ function secondsToParts (sec)
         secondsLeft -= value * seconds;
     });
     return parts;
+}
+
+function partsToSeconds (parts)
+{
+    let sec = 0;
+    Array.from(UNITS).forEach(([unit, { seconds }]) => {
+        sec += (parts.get(unit) || 0) * seconds;
+    });
+    return sec;
 }
 
 function partsToDateTime (parts)
@@ -256,9 +264,11 @@ class TwDuration extends HTMLTimeElement
             element.hidden = ignoredFromStart || ignoredFromEnd;
         };
 
+        const normalisedParts = secondsToParts(partsToSeconds(parts));
+
         for (const [unit] of UNITS.keys())
         {
-            const value = ignoredFromEnd ? 0 : parts.get(unit) || 0;
+            const value = ignoredFromEnd ? 0 : normalisedParts.get(unit) || 0;
 
             const paddedValue =
                 ignoredFromStart

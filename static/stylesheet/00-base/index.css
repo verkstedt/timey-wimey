@@ -6,12 +6,15 @@
     --horizontal-spacing: 3ch;
 
     /* colours */
-    --colour-primary: green;
+    --colour-text: hsl(0, 0%, 15%);
+    --colour-secondary-text: hsl(0, 0%, 35%);
+    --colour-success: green;
+    --colour-warning: orange;
     --colour-danger: red;
     --colour-error: var(--colour-danger);
-    --colour-warning: orange;
 
     box-sizing: border-box;
+    color: var(--colour-text);
     font-size: 1.3em;
     font-family: sans-serif;
 }
