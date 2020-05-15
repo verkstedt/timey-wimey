@@ -5,9 +5,12 @@
 
 .a-detailsSummary::-webkit-details-marker
 {
-    position: absolute;
+    --size: 1ex;
 
-    /* FIXME Less eyeballing */
-    top: calc(1vh - 0.75ex);
-    left: -1.5ex;
+    position: absolute;
+    top: calc(1ch - var(--size) / 2);
+    left: calc(var(--size) * -1.5);
+    width: var(--size);
+    height: var(--size);
+    color: var(--colour-secondary-text);
 }

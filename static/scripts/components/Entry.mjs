@@ -51,7 +51,7 @@ class Entry
         const endElement = this.root.querySelector('[name="entry-end"]');
         const durationElement = this.root.querySelector('[name="entry-duration"]');
         endElement.dateTime = entry.end;
-        endElement.textContent = timeFormatter.format(new Date(entry.start));
+        endElement.textContent = timeFormatter.format(new Date(entry.end));
 
         const durationSec = Math.round(
             (new Date(entry.end) - new Date(entry.start)) / 1000,
