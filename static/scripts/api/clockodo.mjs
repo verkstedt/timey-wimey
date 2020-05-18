@@ -103,7 +103,9 @@ class ApiClockodo
 
      static formatDate (date)
      {
-         return date.toISOString().replace('T', ' ').replace(/\..*$/, '');
+         const d = new Date(date);
+         d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+         return d.toISOString().replace('T', ' ').replace(/\..*$/, '');
      }
 
      updateCache (data)

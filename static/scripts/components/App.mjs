@@ -113,12 +113,14 @@ class App
         // TODO Group by client + project
         // TODO Add “Frequently used“ group
 
-        const today = new Date();
-        const startOfLastMonth = new Date(today.toDateString());
+        const today = new Date((new Date()).toDateString());
+        const endOfToday = new Date(today);
+        endOfToday.setMilliseconds(24 * 60 * 60 * 1000 - 1);
+        const startOfLastMonth = new Date(today);
         startOfLastMonth.setDate(1);
         startOfLastMonth.setMonth(startOfLastMonth.getMonth() - 1);
         const history =
-            await this.api.fetchHistory(startOfLastMonth, today);
+            await this.api.fetchHistory(startOfLastMonth, endOfToday);
 
         await this.state.set({ currentEntry, projectValues, history });
     }

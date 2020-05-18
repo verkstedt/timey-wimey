@@ -5,6 +5,7 @@
     "browser": true
   },
   "rules": {
-    "no-restricted-syntax": "off"
+    "no-restricted-syntax": "off",
+    "import/extensions": ["error", "always"]
   }
 }
