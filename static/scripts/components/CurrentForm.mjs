@@ -13,6 +13,7 @@ class CurrentForm
         this.state = state;
         this.api = api;
 
+        this.handleTaskChange = this.handleTaskChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleStop = this.handleStop.bind(this);
@@ -22,6 +23,7 @@ class CurrentForm
     {
         this.root = root;
 
+        this.root.querySelector('[name=task]').addEventListener('change', this.handleTaskChange);
         this.root.addEventListener('submit', this.handleSubmit);
         this.root.querySelector('[name=change]').addEventListener('click', this.handleChange);
         this.root.querySelector('[name=stop]').addEventListener('click', this.handleStop);
@@ -32,6 +34,28 @@ class CurrentForm
         this.root.removeEventListener('submit', this.handleSubmit);
         this.root.querySelector('[name=change]').removeEventListener('click', this.handleChange);
         this.root.querySelector('[name=stop]').removeEventListener('click', this.handleStop);
+    }
+
+    handleTaskChange (event)
+    {
+        const taskName = event.target.value;
+
+        if (taskName === '')
+        {
+            return;
+        }
+
+        const taskListOption = Array.from(event.target.list.children)
+            .find((option) => option.value === taskName);
+
+        if (!taskListOption)
+        {
+            return;
+        }
+
+        const { project } = taskListOption.dataset;
+
+        this.root.querySelector('[name=project]').value = project;
     }
 
     async handleSubmit (event)
@@ -166,19 +190,37 @@ class CurrentForm
         const { history } = this.state.get();
 
         const tasksUsage = Object.values(history).reduce(
-            (carry, { task: { value: taskName } }) => ({
-                ...carry,
+            (carry, historyEntry) => {
+                const {
+                    task: { value: taskName },
+                    project: { id: projectId },
+                    taskType: { id: taskTypeId },
+                } = historyEntry;
                 // TODO Case insensitive
-                [taskName]: (carry[taskName] || 0) + 1,
-            }),
+                const entry = carry[taskName] || {
+                    count: 0,
+                    attrs: {
+                        'data-project': `${projectId}+${taskTypeId}`,
+                    },
+                };
+                return {
+                    ...carry,
+                    [taskName]: {
+                        ...entry,
+                        count: entry.count + 1,
+                    },
+                };
+            },
             {},
         );
 
         const sortedTasksUsage = Object.fromEntries(
-            Object.entries(tasksUsage).sort(([, a], [, b]) => b - a),
+            Object.entries(tasksUsage)
+                .sort(([, a], [, b]) => b.count - a.count)
+                .map(([taskName, { attrs }]) => [taskName, attrs]),
         );
 
-        return (Object.keys(sortedTasksUsage));
+        return sortedTasksUsage;
     }
 }
 

@@ -1,17 +1,39 @@
+import isPlainObject from './isPlainObject.mjs';
+
 function createOptionsDocumentFragment (document, values)
 {
     const options = document.createDocumentFragment();
     options.appendChild(document.createElement('option'));
-    const valuesArray =
+    const valuesEntries =
         Array.isArray(values)
             ? values
             : Array.from(Object.entries(values));
-    valuesArray.forEach(
+    valuesEntries.forEach(
         (row) => {
-            const [value, label] = Array.isArray(row) ? row : [row];
+            let value;
+            let label;
+            let attrs = {};
+
+            if (!Array.isArray(row))
+            {
+                value = row;
+            }
+            else if (isPlainObject(row[1]))
+            {
+                [value, { label, ...attrs }] = row;
+            }
+            else
+            {
+                [value, label] = row;
+            }
+
+            attrs.value = value;
+
             const option = document.createElement('option');
-            option.value = value;
-            if (label !== null && label !== '')
+            Object.entries(attrs).forEach(([attrName, attrValue]) => {
+                option.setAttribute(attrName, attrValue);
+            });
+            if (label != null && label !== value)
             {
                 option.textContent = label;
             }
