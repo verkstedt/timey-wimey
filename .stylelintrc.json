@@ -1,6 +1,6 @@
 {
   "extends": "@saji/stylelint-config",
   "rules": {
-    "selector-type-no-unknown": false
+    "selector-type-no-unknown": null
   }
 }
