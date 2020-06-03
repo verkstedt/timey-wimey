@@ -268,7 +268,10 @@ class TwDuration extends HTMLTimeElement
 
         for (const [unit] of UNITS.keys())
         {
-            const value = ignoredFromEnd ? 0 : normalisedParts.get(unit) || 0;
+            const value =
+                ignoredFromEnd
+                    ? 0
+                    : (normalisedParts.get(unit) || 0);
 
             const paddedValue =
                 ignoredFromStart

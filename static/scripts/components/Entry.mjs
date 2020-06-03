@@ -30,11 +30,14 @@ class Entry
     reflectState ()
     {
         // TODO <time is=tw-time />
-        const timeFormatter = new Intl.DateTimeFormat(document.documentElement.lang, {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: false,
-        });
+        const timeFormatter = new Intl.DateTimeFormat(
+            document.documentElement.lang,
+            {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: false,
+            },
+        );
 
         const { history } = this.state.get();
         const entry = history.find(({ id }) => id === this.entryId);
@@ -46,12 +49,16 @@ class Entry
 
         const startElement = this.root.querySelector('[name="entry-start"]');
         startElement.dateTime = entry.start;
-        startElement.textContent = timeFormatter.format(new Date(entry.start));
+        startElement.textContent = timeFormatter.format(
+            new Date(entry.start),
+        );
 
         const endElement = this.root.querySelector('[name="entry-end"]');
         const durationElement = this.root.querySelector('[name="entry-duration"]');
         endElement.dateTime = entry.end;
-        endElement.textContent = timeFormatter.format(new Date(entry.end));
+        endElement.textContent = timeFormatter.format(
+            new Date(entry.end),
+        );
 
         const durationSec = Math.round(
             (new Date(entry.end) - new Date(entry.start)) / 1000,

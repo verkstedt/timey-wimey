@@ -42,8 +42,12 @@ class Month
         const document = this.root.ownerDocument;
         const { history } = this.state.get();
         const monthHistoryEntries = history
-            .filter((entry) => entry.start.startsWith(this.monthDateString))
-            .filter((entry) => entry.end);
+            .filter(
+                (entry) => (
+                    entry.end
+                    && entry.start.startsWith(this.monthDateString)
+                ),
+            );
 
         const monthNameFormatter = new Intl.DateTimeFormat(
             document.documentElement.lang,
@@ -59,17 +63,22 @@ class Month
         monthNameElement.dateTime = this.monthDateString;
         monthNameElement.textContent = monthName;
 
-        const totalMs = monthHistoryEntries.reduce(
-            (carry, { start, end }) => carry + (new Date(end) - new Date(start)),
-            0,
-        );
+        const totalMs = monthHistoryEntries
+            .map(({ start, end }) => new Date(end) - new Date(start))
+            .reduce(
+                (carry, duration) => carry + duration,
+                0,
+            );
         this.root.querySelector('[name="total-value"]').dateTime =
             `PT${Math.round(totalMs / 1000)}S`;
 
         const dayKeys = new Set();
         monthHistoryEntries.forEach((entry) => {
             // / FIXME Should always be String
-            const start = entry.start instanceof Date ? entry.start.toISOString() : entry.start;
+            const start =
+                entry.start instanceof Date
+                    ? entry.start.toISOString()
+                    : entry.start;
             const dayKey = start.split('T')[0];
             dayKeys.add(dayKey);
         });

@@ -40,7 +40,10 @@ class History
         const monthKeys = new Set();
         history.forEach((item) => {
             // / FIXME Should always be String
-            const start = item.start instanceof Date ? item.start.toISOString() : item.start;
+            const start =
+                item.start instanceof Date
+                    ? item.start.toISOString()
+                    : item.start;
             const monthKey = start.split('-').slice(0, 2).join('-');
             monthKeys.add(monthKey);
         });

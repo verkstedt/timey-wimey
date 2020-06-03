@@ -73,17 +73,24 @@ class Day
         );
 
         const dayNameElement = this.root.querySelector('[name="day-name"]');
-        dayNameElement.textContent = dayNameFormatter.format(new Date(this.dayDateString));
+        dayNameElement.textContent =
+            dayNameFormatter.format(new Date(this.dayDateString));
 
         const dayHistoryEntries = history
-            .filter((entry) => entry.start.startsWith(this.dayDateString))
-            .filter((entry) => entry.end)
+            .filter(
+                (entry) => (
+                    entry.end
+                    && entry.start.startsWith(this.dayDateString)
+                ),
+            )
             .sort((a, b) => new Date(b.start) - new Date(a.start));
 
-        const totalMs = dayHistoryEntries.reduce(
-            (carry, { start, end }) => carry + (new Date(end) - new Date(start)),
-            0,
-        );
+        const totalMs = dayHistoryEntries
+            .map(({ start, end }) => new Date(end) - new Date(start))
+            .reduce(
+                (carry, duration) => carry + duration,
+                0,
+            );
         this.root.querySelector('[name="total-value"]').dateTime =
             `PT${Math.round(totalMs / 1000)}S`;
 
