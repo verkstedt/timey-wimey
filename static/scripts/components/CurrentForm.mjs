@@ -199,15 +199,13 @@ class CurrentForm
                 // TODO Case insensitive
                 const entry = carry[taskName] || {
                     count: 0,
-                    attrs: {
-                        'data-project': `${projectId}+${taskTypeId}`,
-                    },
+                    project: `${projectId}+${taskTypeId}`,
                 };
                 return {
                     ...carry,
                     [taskName]: {
-                        ...entry,
                         count: entry.count + 1,
+                        project: `${projectId}+${taskTypeId}`,
                     },
                 };
             },
@@ -217,7 +215,7 @@ class CurrentForm
         const sortedTasksUsage = Object.fromEntries(
             Object.entries(tasksUsage)
                 .sort(([, a], [, b]) => b.count - a.count)
-                .map(([taskName, { attrs }]) => [taskName, attrs]),
+                .map(([taskName, { project }]) => [taskName, { 'data-project': project }]),
         );
 
         return sortedTasksUsage;
