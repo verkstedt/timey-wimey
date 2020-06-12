@@ -10,3 +10,8 @@
     justify-content: space-between;
     margin-block-start: var(--vertical-spacing);
 }
+
+.m-actions__action--primary
+{
+    order: 1;
+}
