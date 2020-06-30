@@ -31,7 +31,7 @@ class Entry
     {
         // TODO <time is=tw-time />
         const timeFormatter = new Intl.DateTimeFormat(
-            document.documentElement.lang,
+            undefined,
             {
                 hour: 'numeric',
                 minute: '2-digit',

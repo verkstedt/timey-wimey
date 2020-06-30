@@ -50,7 +50,7 @@ class Month
             );
 
         const monthNameFormatter = new Intl.DateTimeFormat(
-            document.documentElement.lang,
+            undefined,
             { month: 'long' },
         );
 

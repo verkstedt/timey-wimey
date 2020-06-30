@@ -1,10 +1,10 @@
 import Entry from './Entry.mjs';
 
 // FIXME Util
-function createDayNameFormatter (lang)
+function createDayNameFormatter ()
 {
     const dayNameFormatter = new Intl.DateTimeFormat(
-        lang,
+        undefined,
         { day: 'numeric', weekday: 'long' },
     );
 
@@ -68,9 +68,7 @@ class Day
     {
         const { history } = this.state.get();
 
-        const dayNameFormatter = createDayNameFormatter(
-            document.documentElement.lang,
-        );
+        const dayNameFormatter = createDayNameFormatter();
 
         const dayNameElement = this.root.querySelector('[name="day-name"]');
         dayNameElement.textContent =
