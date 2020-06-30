@@ -5,7 +5,7 @@ function createDayNameFormatter (lang)
 {
     const dayNameFormatter = new Intl.DateTimeFormat(
         lang,
-        { day: 'numeric' },
+        { day: 'numeric', weekday: 'long' },
     );
 
     return {
