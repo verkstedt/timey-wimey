@@ -262,7 +262,7 @@ class ApiClockodo
 
     apiPost = this.apiRequest.bind(null, 'post');
 
-    // apiPut = this.apiRequest.bind(null, 'put');
+    apiPut = this.apiRequest.bind(null, 'put');
 
     apiDelete = this.apiRequest.bind(null, 'delete');
 
@@ -427,7 +427,7 @@ class ApiClockodo
             params.billable = Number(billable);
         }
 
-        const response = await this.apiPost('entries', params);
+        const response = await this.apiPut('entries', params);
 
         return this.mapEntry(response.entry);
     }
