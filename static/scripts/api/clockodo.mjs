@@ -17,7 +17,7 @@ class ApiClockodo
      cache = {
          internalCustomers: new Map(),
          internalProjects: new Map(),
-         internalTaskTypes: new Map(),
+         internalServices: new Map(),
      };
 
      constructor (user, key)
@@ -55,7 +55,7 @@ class ApiClockodo
          };
      }
 
-     static mapInternalTaskType (service)
+     static mapInternalService (service)
      {
          const {
              id,
@@ -71,12 +71,12 @@ class ApiClockodo
      static mapProject ({
          internalCustomer,
          internalProject,
-         internalTaskType,
+         internalService,
      })
      {
          return {
-             id: `${internalProject.id}+${internalTaskType.id}`,
-             name: `${internalTaskType.name}, ${internalProject.name}, ${internalCustomer.name}`,
+             id: `${internalProject.id}+${internalService.id}`,
+             name: `${internalService.name}, ${internalProject.name}, ${internalCustomer.name}`,
          };
      }
 
@@ -84,18 +84,18 @@ class ApiClockodo
      {
          const [
              internalProjectIdString,
-             internalTaskTypeIdString,
+             internalServiceIdString,
          ] = projectId.split('+');
 
          const internalProjectId = Number(internalProjectIdString);
-         const internalTaskTypeId = Number(internalTaskTypeIdString);
+         const internalServiceId = Number(internalServiceIdString);
          const internalCustomerId =
             this.getProjectCustomerId(internalProjectId);
 
          return {
              internalCustomerId,
              internalProjectId,
-             internalTaskTypeId,
+             internalServiceId,
          };
      }
 
@@ -109,7 +109,7 @@ class ApiClockodo
          const {
              customers_id: internalCustomerId,
              projects_id: internalProjectId,
-             services_id: internalTaskTypeId,
+             services_id: internalServiceId,
              text: taskName,
              time_since: startDateString,
              time_until: endDateString,
@@ -119,15 +119,15 @@ class ApiClockodo
              .get(internalCustomerId);
          const internalProject = this.cache.internalProjects
              .get(internalProjectId);
-         const internalTaskType = this.cache.internalTaskTypes
-             .get(internalTaskTypeId);
+         const internalService = this.cache.internalServices
+             .get(internalServiceId);
 
          return {
              id: entry.id,
              project: this.constructor.mapProject({
                  internalCustomer,
                  internalProject,
-                 internalTaskType,
+                 internalService,
              }),
              task: {
                  value: taskName,
@@ -181,9 +181,9 @@ class ApiClockodo
          if (data.services)
          {
              Object.values(data.services).forEach((rawService) => {
-                 this.cache.internalTaskTypes.set(
+                 this.cache.internalServices.set(
                      Number(rawService.id),
-                     this.constructor.mapInternalTaskType(rawService),
+                     this.constructor.mapInternalService(rawService),
                  );
              });
          }
@@ -298,24 +298,24 @@ class ApiClockodo
         return this.cache.internalProjects;
     }
 
-    async fetchInternalTaskTypes ()
+    async fetchInternalServices ()
     {
-        if (this.cache.internalTaskTypes.size === 0)
+        if (this.cache.internalServices.size === 0)
         {
             await this.fetchCurrent();
         }
-        return this.cache.internalTaskTypes;
+        return this.cache.internalServices;
     }
 
     async fetchProjects ()
     {
         const internalCustomers = await this.fetchInternalCustomers();
         const internalProjects = await this.fetchInternalProjects();
-        const internalTaskTypes = await this.fetchInternalTaskTypes();
+        const internalServices = await this.fetchInternalServices();
 
-        // FIXME Not all project × taskType combinations make sense
+        // FIXME Not all project × service combinations make sense
         const projects = [];
-        internalTaskTypes.forEach((internalTaskType) => {
+        internalServices.forEach((internalService) => {
             internalProjects.forEach((internalProject) => {
                 const internalCustomer =
                     Array.from(internalCustomers.values()).find(
@@ -327,7 +327,7 @@ class ApiClockodo
                     this.constructor.mapProject({
                         internalCustomer,
                         internalProject,
-                        internalTaskType,
+                        internalService,
                     }),
                 );
             });
@@ -361,7 +361,7 @@ class ApiClockodo
         const {
             internalCustomerId,
             internalProjectId,
-            internalTaskTypeId,
+            internalServiceId,
         } = this.destructProjectId(projectId);
 
         const internalProject = this.cache.internalProjects
@@ -373,7 +373,7 @@ class ApiClockodo
         const response = await this.apiPost('clock', {
             customers_id: internalCustomerId,
             projects_id: internalProjectId,
-            services_id: internalTaskTypeId,
+            services_id: internalServiceId,
             text: taskName,
             billable: Number(billableFlag),
         });
@@ -409,12 +409,12 @@ class ApiClockodo
             const {
                 internalCustomerId,
                 internalProjectId,
-                internalTaskTypeId,
+                internalServiceId,
             } = this.destructProjectId(project);
 
             params.customers_id = internalCustomerId;
             params.projects_id = internalProjectId;
-            params.services_id = internalTaskTypeId;
+            params.services_id = internalServiceId;
         }
 
         if (task != null)
