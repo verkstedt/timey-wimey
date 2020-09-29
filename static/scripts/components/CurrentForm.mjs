@@ -62,11 +62,11 @@ class CurrentForm
     {
         event.preventDefault();
 
-        const { project, taskType, task } = this.getFormData();
+        const { project, task } = this.getFormData();
 
         await this.processUI(async () => {
             const currentEntry =
-                await this.api.start(project, taskType, task);
+                await this.api.start(project, task);
             await this.state.set({ currentEntry });
         });
     }
@@ -75,7 +75,7 @@ class CurrentForm
     {
         event.preventDefault();
 
-        const { project, taskType, task } = this.getFormData();
+        const { project, task } = this.getFormData();
         const {
             currentEntry: { id: currentEntryId },
         } = this.state.get();
@@ -87,7 +87,7 @@ class CurrentForm
         await this.processUI(async () => {
             const currentEntry = await this.api.update(
                 currentEntryId,
-                { project, taskType, task },
+                { project, task },
             );
             await this.state.set({ currentEntry });
         });
@@ -125,10 +125,13 @@ class CurrentForm
     reflectState ()
     {
         const {
-            projectValues = [],
+            projects = [],
             currentEntry,
         } = this.state.get();
 
+        const projectValues = projects.map(
+            ({ id, name }) => [id, name],
+        );
         Array.from(this.root.querySelectorAll('select[name="project"]'))
             .forEach(setSelectValues.bind(null, projectValues));
 
@@ -142,7 +145,6 @@ class CurrentForm
         const {
             task: { value: task } = {},
             project: { id: projectId } = {},
-            taskType: { id: taskTypeId } = {},
             start: startString,
         } = currentEntry || {};
 
@@ -152,7 +154,7 @@ class CurrentForm
         if (running)
         {
             taskValue = task;
-            projectValue = `${projectId}+${taskTypeId}`;
+            projectValue = projectId;
             startValue = new Date(startString);
         }
 
@@ -172,16 +174,9 @@ class CurrentForm
     getFormData ()
     {
         const data = new FormData(this.root);
-        const task = data.get('task');
-        // TODO Validate
-        const projectAndTaskType = data.get('project').split('+');
-        const project = Number(projectAndTaskType[0]);
-        const taskType = Number(projectAndTaskType[1]);
-
         return {
-            project,
-            taskType,
-            task,
+            project: data.get('project'),
+            task: data.get('task'),
         };
     }
 
@@ -194,18 +189,17 @@ class CurrentForm
                 const {
                     task: { value: taskName },
                     project: { id: projectId },
-                    taskType: { id: taskTypeId },
                 } = historyEntry;
                 // TODO Case insensitive
                 const entry = carry[taskName] || {
                     count: 0,
-                    project: `${projectId}+${taskTypeId}`,
+                    project: projectId,
                 };
                 return {
                     ...carry,
                     [taskName]: {
                         count: entry.count + 1,
-                        project: `${projectId}+${taskTypeId}`,
+                        project: projectId,
                     },
                 };
             },

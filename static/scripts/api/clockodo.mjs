@@ -15,9 +15,9 @@ class ApiClockodo
     // const actionQueue = [];
 
      cache = {
-         customers: new Map(),
-         projects: new Map(),
-         taskTypes: new Map(),
+         internalCustomers: new Map(),
+         internalProjects: new Map(),
+         internalTaskTypes: new Map(),
      };
 
      constructor (user, key)
@@ -26,7 +26,7 @@ class ApiClockodo
          this.key = key;
      }
 
-     static mapCustomer (customer)
+     static mapInternalCustomer (customer)
      {
          const {
              id,
@@ -42,7 +42,7 @@ class ApiClockodo
          };
      }
 
-     static mapProject (project)
+     static mapInternalProject (project)
      {
          const {
              id,
@@ -55,7 +55,7 @@ class ApiClockodo
          };
      }
 
-     static mapTaskType (service)
+     static mapInternalTaskType (service)
      {
          const {
              id,
@@ -68,6 +68,37 @@ class ApiClockodo
          };
      }
 
+     static mapProject ({
+         internalCustomer,
+         internalProject,
+         internalTaskType,
+     })
+     {
+         return {
+             id: `${internalProject.id}+${internalTaskType.id}`,
+             name: `${internalTaskType.name}, ${internalProject.name}, ${internalCustomer.name}`,
+         };
+     }
+
+     destructProjectId (projectId)
+     {
+         const [
+             internalProjectIdString,
+             internalTaskTypeIdString,
+         ] = projectId.split('+');
+
+         const internalProjectId = Number(internalProjectIdString);
+         const internalTaskTypeId = Number(internalTaskTypeIdString);
+         const internalCustomerId =
+            this.getProjectCustomerId(internalProjectId);
+
+         return {
+             internalCustomerId,
+             internalProjectId,
+             internalTaskTypeId,
+         };
+     }
+
      mapEntry (entry)
      {
          if (entry === null)
@@ -76,23 +107,28 @@ class ApiClockodo
          }
 
          const {
-             projects_id: projectId,
-             services_id: taskTypeId,
+             customers_id: internalCustomerId,
+             projects_id: internalProjectId,
+             services_id: internalTaskTypeId,
              text: taskName,
              time_since: startDateString,
              time_until: endDateString,
          } = entry;
 
+         const internalCustomer = this.cache.internalCustomers
+             .get(internalCustomerId);
+         const internalProject = this.cache.internalProjects
+             .get(internalProjectId);
+         const internalTaskType = this.cache.internalTaskTypes
+             .get(internalTaskTypeId);
+
          return {
              id: entry.id,
-             project: {
-                 id: projectId,
-                 value: this.cache.projects.get(projectId).name,
-             },
-             taskType: {
-                 id: taskTypeId,
-                 value: this.cache.taskTypes.get(taskTypeId).name,
-             },
+             project: this.constructor.mapProject({
+                 internalCustomer,
+                 internalProject,
+                 internalTaskType,
+             }),
              task: {
                  value: taskName,
              },
@@ -122,17 +158,21 @@ class ApiClockodo
                      else
                      {
                          const rawCustomer = rawCustomerOrProject;
-                         this.cache.customers.set(
+                         this.cache.internalCustomers.set(
                              Number(rawCustomer.id),
-                             this.constructor.mapCustomer(rawCustomer),
+                             this.constructor.mapInternalCustomer(
+                                 rawCustomer,
+                             ),
                          );
                          rawProjects = rawCustomer.projects;
                      }
 
                      rawProjects.forEach((rawProject) => {
-                         this.cache.projects.set(
+                         this.cache.internalProjects.set(
                              Number(rawProject.id),
-                             this.constructor.mapProject(rawProject),
+                             this.constructor.mapInternalProject(
+                                 rawProject,
+                             ),
                          );
                      });
                  },
@@ -141,9 +181,9 @@ class ApiClockodo
          if (data.services)
          {
              Object.values(data.services).forEach((rawService) => {
-                 this.cache.taskTypes.set(
+                 this.cache.internalTaskTypes.set(
                      Number(rawService.id),
-                     this.constructor.mapTaskType(rawService),
+                     this.constructor.mapInternalTaskType(rawService),
                  );
              });
          }
@@ -155,14 +195,14 @@ class ApiClockodo
                  if (keyParts.length === 1)
                  {
                      const customerId = Number(keyParts[0]);
-                     this.cache.customers.get(customerId).billable =
-                        billable;
+                     this.cache.internalCustomers
+                         .get(customerId).billable = billable;
                  }
                  else if (keyParts.length === 2)
                  {
                      const projectId = Number(keyParts.pop());
-                     this.cache.projects.get(projectId).billable =
-                        billable;
+                     this.cache.internalProjects
+                         .get(projectId).billable = billable;
                  }
              });
          }
@@ -201,7 +241,17 @@ class ApiClockodo
         // TODO Handle 401: Unauthorized
         if (response.status !== 200)
         {
-            throw new Error(`Got ${response.status} from API`);
+            let body;
+            try
+            {
+                body = await response.json();
+                body = body?.error?.message || JSON.stringify(body);
+            }
+            catch (_)
+            {
+                body = '(non-JSON response)';
+            }
+            throw new Error(`Got ${response.status} from API: ${body}`);
         }
         const data = await response.json();
         this.updateCache(data);
@@ -213,6 +263,7 @@ class ApiClockodo
     apiPost = this.apiRequest.bind(null, 'post');
 
     // apiPut = this.apiRequest.bind(null, 'put');
+
     apiDelete = this.apiRequest.bind(null, 'delete');
 
 
@@ -229,31 +280,62 @@ class ApiClockodo
         return this.mapEntry(result.running);
     }
 
-    async fetchCustomers ()
+    async fetchInternalCustomers ()
     {
-        if (this.cache.customers.size === 0)
+        if (this.cache.internalCustomers.size === 0)
         {
             await this.fetchCurrent();
         }
-        return this.cache.customers;
+        return this.cache.internalCustomers;
+    }
+
+    async fetchInternalProjects ()
+    {
+        if (this.cache.internalProjects.size === 0)
+        {
+            await this.fetchCurrent();
+        }
+        return this.cache.internalProjects;
+    }
+
+    async fetchInternalTaskTypes ()
+    {
+        if (this.cache.internalTaskTypes.size === 0)
+        {
+            await this.fetchCurrent();
+        }
+        return this.cache.internalTaskTypes;
     }
 
     async fetchProjects ()
     {
-        if (this.cache.projects.size === 0)
-        {
-            await this.fetchCurrent();
-        }
-        return this.cache.projects;
-    }
+        const internalCustomers = await this.fetchInternalCustomers();
+        const internalProjects = await this.fetchInternalProjects();
+        const internalTaskTypes = await this.fetchInternalTaskTypes();
 
-    async fetchTaskTypes ()
-    {
-        if (this.cache.taskTypes.size === 0)
-        {
-            await this.fetchCurrent();
-        }
-        return this.cache.taskTypes;
+        // FIXME Not all project × taskType combinations make sense
+        const projects = [];
+        internalTaskTypes.forEach((internalTaskType) => {
+            internalProjects.forEach((internalProject) => {
+                const internalCustomer =
+                    Array.from(internalCustomers.values()).find(
+                        ({ projectIds }) => projectIds.has(
+                            internalProject.id,
+                        ),
+                    );
+                projects.push(
+                    this.constructor.mapProject({
+                        internalCustomer,
+                        internalProject,
+                        internalTaskType,
+                    }),
+                );
+            });
+        });
+
+        // TODO Group by client + project
+        // TODO Add “Frequently used“ group
+        return projects;
     }
 
     async fetchHistory (dateStart, dateEnd)
@@ -272,21 +354,26 @@ class ApiClockodo
 
     async start (
         projectId,
-        taskTypeId,
         taskName,
         { billable = null } = {},
     )
     {
-        const project = this.getProject(projectId);
-        const projectCustomerId = this.getProjectCustomerId(projectId);
+        const {
+            internalCustomerId,
+            internalProjectId,
+            internalTaskTypeId,
+        } = this.destructProjectId(projectId);
+
+        const internalProject = this.cache.internalProjects
+            .get(internalProjectId);
 
         const billableFlag =
-            (billable == null) ? project.billable : billable;
+            (billable == null) ? internalProject.billable : billable;
 
         const response = await this.apiPost('clock', {
-            customers_id: projectCustomerId,
-            projects_id: projectId,
-            services_id: taskTypeId,
+            customers_id: internalCustomerId,
+            projects_id: internalProjectId,
+            services_id: internalTaskTypeId,
             text: taskName,
             billable: Number(billableFlag),
         });
@@ -300,7 +387,6 @@ class ApiClockodo
             start = null,
             stop = null,
             project = null,
-            taskType = null,
             task = null,
             billable = null,
         },
@@ -320,13 +406,15 @@ class ApiClockodo
 
         if (project != null)
         {
-            params.projects_id = project;
-            params.customers_id = this.getProjectCustomerId(project);
-        }
+            const {
+                internalCustomerId,
+                internalProjectId,
+                internalTaskTypeId,
+            } = this.destructProjectId(project);
 
-        if (taskType != null)
-        {
-            params.services_id = taskType;
+            params.customers_id = internalCustomerId;
+            params.projects_id = internalProjectId;
+            params.services_id = internalTaskTypeId;
         }
 
         if (task != null)
@@ -344,23 +432,11 @@ class ApiClockodo
         return this.mapEntry(response.entry);
     }
 
-    getProject (projectId)
-    {
-        const project = this.cache.projects.get(projectId);
-
-        if (project == null)
-        {
-            throw new Error(`Unknown project id=${projectId}`);
-        }
-
-        return project;
-    }
-
     getProjectCustomerId (projectId)
     {
         let projectCustomerId = null;
         // eslint-disable-next-line no-restricted-syntax
-        for (const customer of this.cache.customers.values())
+        for (const customer of this.cache.internalCustomers.values())
         {
             if (customer.projectIds.has(projectId))
             {

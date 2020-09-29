@@ -45,7 +45,7 @@ class Entry
         this.root.querySelector('[name="entry-task"]')
             .textContent = entry.task.value;
         this.root.querySelector('[name="entry-project"]')
-            .textContent = `${entry.taskType.value} (${entry.project.value})`;
+            .textContent = `${entry.project.name}`;
 
         const startElement = this.root.querySelector('[name="entry-start"]');
         startElement.dateTime = entry.start;

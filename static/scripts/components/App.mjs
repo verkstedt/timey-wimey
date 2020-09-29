@@ -94,24 +94,7 @@ class App
         }
 
         const currentEntry = await this.api.fetchCurrent();
-
-        const customers = await this.api.fetchCustomers();
         const projects = await this.api.fetchProjects();
-        const taskTypes = await this.api.fetchTaskTypes();
-        // FIXME Not all project × taskType combinations make sense
-        const projectValues = {};
-        taskTypes.forEach((taskType) => {
-            projects.forEach((project) => {
-                const customer = Array.from(customers.values()).find(
-                    ({ projectIds }) => projectIds.has(project.id),
-                );
-                const key = `${project.id}+${taskType.id}`;
-                const name = `${taskType.name}, ${project.name}, ${customer.name}`;
-                projectValues[key] = name;
-            });
-        });
-        // TODO Group by client + project
-        // TODO Add “Frequently used“ group
 
         const today = new Date((new Date()).toDateString());
         const endOfToday = new Date(today);
@@ -122,7 +105,7 @@ class App
         const history =
             await this.api.fetchHistory(startOfLastMonth, endOfToday);
 
-        await this.state.set({ currentEntry, projectValues, history });
+        await this.state.set({ currentEntry, projects, history });
     }
 
     reflectState ()

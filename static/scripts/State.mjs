@@ -6,16 +6,11 @@ const DEFAULT_STATE = {
         login: null,
         token: null,
     },
+    history: [],
     currentEntry: {
         id: null,
         project: {
             id: null,
-        },
-        taskType: {
-            id: null,
-        },
-        task: {
-            value: null,
         },
         start: null,
         end: null,
