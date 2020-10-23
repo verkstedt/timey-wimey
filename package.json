@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/verkstedt/timey-wimey#readme",
   "scripts": {
+    "dev": "npx browser-sync --watch static/ static/",
     "test": "npm run lint",
     "lint": "npm-run-all --silent --parallel --print-name --aggregate-output 'lint:*'",
     "lint:js": "eslint --max-warnings=0 --ext=.js,.mjs,.cjs,.jsx,.ts,.tsx \"${@:-.}\"",
