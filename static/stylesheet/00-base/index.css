@@ -41,21 +41,21 @@ button
     font: inherit;
 }
 
-p:not(:last-child),
-dl:not(:last-child),
-ul:not(:last-child),
-ol:not(:last-child),
-li:not(:last-child)
+p:where(:not(:last-child)),
+dl:where(:not(:last-child)),
+ul:where(:not(:last-child)),
+ol:where(:not(:last-child)),
+li:where(:not(:last-child))
 {
     margin-block-start: 0;
     margin-block-end: var(--vertical-spacing);
 }
 
-p:last-child,
-dl:last-child,
-ul:last-child,
-ol:last-child,
-li:last-child
+p:where(:last-child),
+dl:where(:last-child),
+ul:where(:last-child),
+ol:where(:last-child),
+li:where(:last-child)
 {
     margin-block-start: 0;
     margin-block-end: 0;
