@@ -9,7 +9,25 @@
     text-align: center;
     background-color: black;
     background-color: rgba(0, 0, 0, 0.65);
-    pointer-events: none;
+}
+
+@supports (pointer-events: none) and (transform: translateY(1em))
+{
+    .m-pageMessage
+    {
+        transform: none;
+        opacity: 1;
+        transition: ease-out 400ms;
+        transition-property: opacity, transform;
+        pointer-events: none;
+    }
+
+    .m-pageMessage[hidden]
+    {
+        display: block;
+        transform: translateY(calc(-2.5 * var(--line-height)));
+        opacity: 0;
+    }
 }
 
 p.m-pageMessage__content
