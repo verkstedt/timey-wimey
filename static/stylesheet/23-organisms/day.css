@@ -3,6 +3,7 @@
     position: sticky;
     top: 1.5em;
     top: calc(1.5em - 1px);
+    z-index: var(--z-index-sticky-header-2);
     background: var(--colour-background);
     background:
         linear-gradient(

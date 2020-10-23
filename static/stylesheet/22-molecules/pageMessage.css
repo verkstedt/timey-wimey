@@ -1,0 +1,19 @@
+.m-pageMessage
+{
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: var(--z-index-page-message);
+    color: white;
+    text-align: center;
+    background-color: black;
+    background-color: rgba(0, 0, 0, 0.65);
+    pointer-events: none;
+}
+
+p.m-pageMessage__content
+{
+    margin-block-start: calc(var(--vertical-spacing) / 2);
+    margin-block-end: calc(var(--vertical-spacing) / 2);
+}

@@ -14,6 +14,11 @@
     --colour-danger: red;
     --colour-error: var(--colour-danger);
 
+    /* z-indexes */
+    --z-index-sticky-header-2: 1;
+    --z-index-sticky-header-1: 2;
+    --z-index-page-message: 3;
+
     box-sizing: border-box;
     color: var(--colour-text);
     font-size: 1.3em;

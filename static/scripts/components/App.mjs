@@ -8,6 +8,8 @@ class App
 {
     state;
 
+    isLoading = true;
+
     api;
 
     loginForm;
@@ -17,7 +19,6 @@ class App
     history;
 
     root = null;
-
 
     stateRefreshPromise = null;
 
@@ -34,12 +35,14 @@ class App
 
         this.state.addEventListener(this.handleStateChange);
 
-        this.refreshState();
+        this.refreshState().then(() => this.reflectState());
     }
 
     async bind (root)
     {
         this.root = root;
+
+        this.loadingMessage = this.root.querySelector('#loading-message');
 
         this.loginForm.bind(this.root.querySelector('#login'));
         this.currentForm.bind(this.root.querySelector('#current'));
@@ -105,6 +108,7 @@ class App
         const history =
             await this.api.fetchHistory(startOfLastMonth, endOfToday);
 
+        this.isLoading = false;
         await this.state.set({ currentEntry, projects, history });
     }
 
@@ -112,6 +116,8 @@ class App
     {
         const authorized = this.isAuthorized();
         this.root.dataset.authorized = authorized ? 'true' : 'false';
+
+        this.loadingMessage.hidden = !this.isLoading;
 
         if (authorized)
         {
