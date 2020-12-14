@@ -15,9 +15,49 @@ class Entry
         this.entryId = entryId;
     }
 
+    static getEntryIdFromEvent (event)
+    {
+        const element = event.currentTarget;
+        const container = element.closest('[data-component="entry"]');
+        return container.dataset.entryId;
+    }
+
+    static handleEditClick (event)
+    {
+        event.preventDefault();
+        const entryId = Entry.getEntryIdFromEvent(event);
+
+        // TODO Implement editing entries
+        window.open(
+            `https://my.clockodo.com/en/entries/editentry/?id=${entryId}`,
+            null,
+            ['noopener', 'noreferrer'],
+        );
+    }
+
+    static handleSplitClick (event)
+    {
+        event.preventDefault();
+        const entryId = Entry.getEntryIdFromEvent(event);
+
+        // TODO Implement splitting entries
+        window.open(
+            `https://my.clockodo.com/en/entries/split/?id=${entryId}`,
+            null,
+            ['noopener', 'noreferrer'],
+        );
+    }
+
     async bind (root)
     {
         this.root = root;
+
+        this.root.dataset.entryId = this.entryId;
+
+        root.querySelector('[data-component="edit"]')
+            .addEventListener('click', this.constructor.handleEditClick);
+        root.querySelector('[data-component="split"]')
+            .addEventListener('click', this.constructor.handleSplitClick);
 
         this.reflectState();
     }

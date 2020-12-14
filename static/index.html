@@ -239,7 +239,10 @@
                                 </div>
                             </dl>
                             <template name="entry-tpl">
-                                <li class="o-entryList__item o-entryList__item--entry m-entry">
+                                <li
+                                    class="o-entryList__item o-entryList__item--entry m-entry"
+                                    data-component="entry"
+                                >
                                     <h4 name="entry-task" class="m-entry__task"></h4>
                                     <span class="u-sr">filed under</span>
                                     <span name="entry-project" class="m-entry__project"></span>
@@ -265,27 +268,29 @@
                                             ></time>
                                         </div>
                                     </div>
-                                    <div class="u-v2-2 m-actions">
+                                    <div class="m-actions">
                                         <button
-                                            class="a-button a-button--destructive m-actions__action"
+                                            class="u-v2-2 a-button a-button--destructive m-actions__action"
                                             type=button
                                         >
                                             Delete
                                         </button>
                                         <button
-                                            class="u-v3 a-button m-actions__action"
+                                            class="a-button m-actions__action"
                                             type=button
+                                            data-component="split"
                                         >
                                             Split
                                         </button>
                                         <button
-                                            class="u-v3 a-button m-actions__action"
+                                            class="a-button m-actions__action"
                                             type=button
+                                            data-component="edit"
                                         >
                                             Edit
                                         </button>
                                         <button
-                                            class="a-button a-button--primary m-actions__action"
+                                            class="u-v2-2 a-button a-button--primary m-actions__action"
                                             type=button
                                         >
                                             Continue
