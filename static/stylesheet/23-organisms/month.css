@@ -3,10 +3,4 @@
     position: sticky;
     top: 0;
     z-index: var(--z-index-sticky-header-1);
-    font-size: 1.5em;
-    background: var(--colour-background);
-    margin-inline-start: calc(-1 * var(--horizontal-spacing));
-    margin-inline-end: calc(-1 * var(--horizontal-spacing));
-    padding-inline-start: calc(var(--horizontal-spacing));
-    padding-inline-end: calc(var(--horizontal-spacing));
 }

@@ -1,3 +1,12 @@
+.o-progressTimer--day
+{
+    position: sticky;
+    top: calc(3 * var(--line-height) - 1px);
+    z-index: var(--z-index-sticky-header-3);
+    margin-block-start: 0;
+    padding-block-start: var(--vertical-spacing);
+}
+
 @supports (flex-wrap: wrap)
 {
     .o-progressTimer
