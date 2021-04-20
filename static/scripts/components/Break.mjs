@@ -33,7 +33,7 @@ class Break
 
     reflectState ()
     {
-        const { history } = this.state.get();
+        const { history, currentEntry } = this.state.get();
         const entry = history.find(({ id }) => id === this.entryId);
         const entryEnd = entry.end;
         if (!this.prevEntryId && !isToday(new Date(entryEnd)))
@@ -47,10 +47,13 @@ class Break
                 ? history.find(({ id }) => id === this.prevEntryId)
                 : null;
         const prevEntryStart =
-            prevEntry
-                ? prevEntry.start
-                // TODO Should be ticking
-                : new Date();
+            prevEntry?.start
+            || (
+                currentEntry
+                    ? new Date(currentEntry.start)
+                    // TODO Should be ticking
+                    : new Date()
+            );
 
         const durationElement = this.root.querySelector('[name="duration"]');
 
