@@ -1,4 +1,5 @@
 import Entry from './Entry.mjs';
+import Break from './Break.mjs';
 
 // FIXME Util
 function createDayNameFormatter ()
@@ -48,10 +49,11 @@ class Day
         this.dayDateString = dayDateString;
     }
 
-    async bind (root, entryTpl)
+    async bind (root, entryTpl, breakTpl)
     {
         this.root = root;
         this.entryTpl = entryTpl;
+        this.breakTpl = breakTpl;
 
         this.reflectState();
     }
@@ -62,6 +64,7 @@ class Day
 
         this.root = null;
         this.entryTpl = null;
+        this.breakTpl = null;
     }
 
     reflectState ()
@@ -94,14 +97,28 @@ class Day
 
         const entriesRoot = this.root.querySelector('[name="entries"]');
         const entryTplElement = this.entryTpl.content.children[0];
+        const breakTplElement = this.breakTpl.content.children[0];
         const entries = document.createDocumentFragment();
+        let prevEntryId;
         dayHistoryEntries.forEach(({ id: entryId }) => {
+            const entryBreakElement =
+                document.importNode(breakTplElement, true);
+            const entryBreak = new Break(
+                this.state,
+                prevEntryId,
+                entryId,
+            );
+            this.entries.push(entryBreak);
+            entryBreak.bind(entryBreakElement);
+            entries.appendChild(entryBreakElement);
+
             const entryElement =
                 document.importNode(entryTplElement, true);
             const entry = new Entry(this.state, this.api, entryId);
             this.entries.push(entry);
             entry.bind(entryElement);
             entries.appendChild(entryElement);
+            prevEntryId = entryId;
         });
         entriesRoot.textContent = '';
         entriesRoot.appendChild(entries);

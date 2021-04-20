@@ -91,7 +91,8 @@ class Month
             const day = new Day(this.state, this.api, dayKey);
             this.days.push(day);
             const entryTpl = dayElement.querySelector('[name="entry-tpl"]');
-            day.bind(dayElement, entryTpl);
+            const breakTpl = dayElement.querySelector('[name="break-tpl"]');
+            day.bind(dayElement, entryTpl, breakTpl);
             days.appendChild(dayElement);
         });
 
