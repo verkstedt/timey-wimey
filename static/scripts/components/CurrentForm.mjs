@@ -65,9 +65,10 @@ class CurrentForm
         const { project, task } = this.getFormData();
 
         await this.processUI(async () => {
+            const history = this.getHistoryWithCurrentEntryStopped();
             const currentEntry =
                 await this.api.start(project, task);
-            await this.state.set({ currentEntry });
+            await this.state.set({ currentEntry, history });
         });
     }
 
@@ -102,8 +103,9 @@ class CurrentForm
         } = this.state.get();
 
         await this.processUI(async () => {
+            const history = this.getHistoryWithCurrentEntryStopped();
             await this.api.stop(currentEntryId);
-            await this.state.set({ currentEntry: null });
+            await this.state.set({ currentEntry: null, history });
         });
     }
 
@@ -169,6 +171,21 @@ class CurrentForm
         this.root.querySelector('[name=stop]').disabled = !running;
 
         this.root.querySelector('[name=change]').disabled = !running;
+    }
+
+    getHistoryWithCurrentEntryStopped ()
+    {
+        const { currentEntry, history } = this.state.get();
+
+        if (!currentEntry)
+        {
+            return history;
+        }
+
+        return history.concat([{
+            ...currentEntry,
+            end: new Date().toISOString(),
+        }]);
     }
 
     getFormData ()
