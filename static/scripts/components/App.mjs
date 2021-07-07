@@ -6,11 +6,15 @@ import History from './History.mjs';
 
 class App
 {
+    static REFRESH_THROTTLE_MS = 5000;
+
     state;
 
     isLoading = true;
 
     api;
+
+    window;
 
     loginForm;
 
@@ -20,20 +24,26 @@ class App
 
     root = null;
 
-    constructor (state, api)
+    lastRefreshTimestampMs = 0;
+
+    constructor (state, api, window)
     {
         this.state = state;
         this.api = api;
+        this.window = window;
 
         this.loginForm = new LoginForm(this.state, this.api);
         this.currentForm = new CurrentForm(this.state, this.api);
         this.history = new History(this.state, this.api);
 
-        this.handleStateChange = this.handleStateChange.bind(this);
+        this.handleStateChange =
+            this.handleStateChange.bind(this);
+        this.handlePageReactivation =
+            this.handlePageReactivation.bind(this);
 
         this.state.addEventListener(this.handleStateChange);
 
-        this.refreshState().then(() => this.reflectState());
+        this.throttledRefreshAndReflect();
     }
 
     async bind (root)
@@ -52,8 +62,9 @@ class App
 
         this.reflectState();
 
-        // TODO Refetch in background from time to time,
-        //      but not when form is focused
+        window.addEventListener('visibilitychange', this.handlePageReactivation);
+        window.addEventListener('focus', this.handlePageReactivation);
+        window.addEventListener('pageshow', this.handlePageReactivation);
     }
 
     async unbind ()
@@ -62,6 +73,10 @@ class App
         this.currentForm.unbind();
 
         this.root = null;
+
+        window.removeEventListener('visibilitychange', this.handlePageReactivation);
+        window.removeEventListener('focus', this.handlePageReactivation);
+        window.removeEventListener('pageshow', this.handlePageReactivation);
     }
 
     async handleStateChange (oldState)
@@ -80,10 +95,43 @@ class App
         }
     }
 
+    async handlePageReactivation ()
+    {
+        if (this.window.document.hidden)
+        {
+            return;
+        }
+
+        const { activeElement } = this.window.document.activeElement;
+
+        // Don’t refresh if a input is focused
+        if (
+            (activeElement?.tagName === 'INPUT' && activeElement?.type !== 'submit')
+            || activeElement?.tagName === 'TEXTAREA'
+        )
+        {
+            return;
+        }
+
+        this.throttledRefreshAndReflect();
+    }
+
     isAuthorized ()
     {
         const { auth: { login, token } } = this.state.get();
         return (login != null && token != null);
+    }
+
+    async throttledRefreshAndReflect ()
+    {
+        const now = Date.now();
+
+        if (now - this.lastRefreshTimestampMs > App.REFRESH_THROTTLE_MS)
+        {
+            this.lastRefreshTimestampMs = now;
+            await this.refreshState();
+            this.reflectState();
+        }
     }
 
     async refreshState ()
