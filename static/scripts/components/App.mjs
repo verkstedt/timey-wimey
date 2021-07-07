@@ -20,8 +20,6 @@ class App
 
     root = null;
 
-    stateRefreshPromise = null;
-
     constructor (state, api)
     {
         this.state = state;
