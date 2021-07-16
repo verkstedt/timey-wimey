@@ -6,6 +6,8 @@ class Month
 
     api;
 
+    refreshHistory;
+
     monthDateString;
 
     root = null;
@@ -14,10 +16,11 @@ class Month
 
     days = [];
 
-    constructor (state, api, monthDateString)
+    constructor (state, api, refreshHistory, monthDateString)
     {
         this.state = state;
         this.api = api;
+        this.refreshHistory = refreshHistory;
         this.monthDateString = monthDateString;
     }
 
@@ -88,7 +91,12 @@ class Month
         Array.from(dayKeys).sort().reverse().forEach((dayKey) => {
             const dayElement =
                 document.importNode(dayTplElement, true);
-            const day = new Day(this.state, this.api, dayKey);
+            const day = new Day(
+                this.state,
+                this.api,
+                this.refreshHistory,
+                dayKey,
+            );
             this.days.push(day);
             const entryTpl = dayElement.querySelector('[name="entry-tpl"]');
             const breakTpl = dayElement.querySelector('[name="break-tpl"]');

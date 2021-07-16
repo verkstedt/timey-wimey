@@ -33,14 +33,19 @@ class App
         this.api = api;
         this.window = window;
 
-        this.loginForm = new LoginForm(this.state, this.api);
-        this.currentForm = new CurrentForm(this.state, this.api);
-        this.history = new History(this.state, this.api);
-
         this.handleStateChange =
             this.handleStateChange.bind(this);
         this.handlePageReactivation =
             this.handlePageReactivation.bind(this);
+        this.refreshHistory =
+            this.refreshHistory.bind(this);
+
+        this.loginForm =
+            new LoginForm(this.state, this.api);
+        this.currentForm =
+            new CurrentForm(this.state, this.api);
+        this.history =
+            new History(this.state, this.api, this.refreshHistory);
 
         this.state.addEventListener(this.handleStateChange);
 
@@ -153,6 +158,15 @@ class App
 
         this.isLoading = false;
         await this.state.set({ currentEntry, projects, history });
+    }
+
+    async refreshHistory ()
+    {
+        this.isLoading = true;
+        this.reflectState();
+
+        await this.refreshState();
+        this.reflectState();
     }
 
     reflectState ()

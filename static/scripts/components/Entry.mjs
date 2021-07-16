@@ -4,15 +4,21 @@ class Entry
 
     api;
 
+    refreshHistory;
+
     entryId;
 
     root = null;
 
-    constructor (state, api, entryId)
+    constructor (state, api, refreshHistory, entryId)
     {
         this.state = state;
         this.api = api;
+        this.refreshHistory = refreshHistory;
         this.entryId = entryId;
+
+        this.handleEditClick = this.handleEditClick.bind(this);
+        this.handleSplitClick = this.handleSplitClick.bind(this);
     }
 
     static getEntryIdFromEvent (event)
@@ -22,30 +28,39 @@ class Entry
         return container.dataset.entryId;
     }
 
-    static handleEditClick (event)
+    handleEditClick (event)
     {
         event.preventDefault();
         const entryId = Entry.getEntryIdFromEvent(event);
 
         // TODO Implement editing entries
-        window.open(
+        const win2 = window.open(
             `https://my.clockodo.com/en/entries/editentry/?id=${entryId}`,
-            null,
-            ['noopener', 'noreferrer'],
         );
+        this.refreshAfterWindowCloses(win2);
     }
 
-    static handleSplitClick (event)
+    handleSplitClick (event)
     {
         event.preventDefault();
         const entryId = Entry.getEntryIdFromEvent(event);
 
         // TODO Implement splitting entries
-        window.open(
+        const win2 = window.open(
             `https://my.clockodo.com/en/entries/split/?id=${entryId}`,
-            null,
-            ['noopener', 'noreferrer'],
         );
+        this.refreshAfterWindowCloses(win2);
+    }
+
+    refreshAfterWindowCloses (win)
+    {
+        const id = window.setInterval(() => {
+            if (win.closed)
+            {
+                window.clearInterval(id);
+                this.refreshHistory();
+            }
+        }, 200);
     }
 
     async bind (root)
@@ -55,9 +70,9 @@ class Entry
         this.root.dataset.entryId = this.entryId;
 
         root.querySelector('[data-component="edit"]')
-            .addEventListener('click', this.constructor.handleEditClick);
+            .addEventListener('click', this.handleEditClick);
         root.querySelector('[data-component="split"]')
-            .addEventListener('click', this.constructor.handleSplitClick);
+            .addEventListener('click', this.handleSplitClick);
 
         this.reflectState();
     }

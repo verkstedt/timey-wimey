@@ -6,16 +6,19 @@ class History
 
     api;
 
+    refreshHistory;
+
     root = null;
 
     monthTpl = null;
 
     months = [];
 
-    constructor (state, api)
+    constructor (state, api, refreshHistory)
     {
         this.state = state;
         this.api = api;
+        this.refreshHistory = refreshHistory;
     }
 
     async bind (root, monthTpl)
@@ -53,7 +56,12 @@ class History
             const monthElement =
                 document.importNode(monthTplElement, true);
             const dayTpl = monthElement.querySelector('[name="day-tpl"]');
-            const month = new Month(this.state, this.api, monthKey);
+            const month = new Month(
+                this.state,
+                this.api,
+                this.refreshHistory,
+                monthKey,
+            );
             this.months.push(month);
             month.bind(monthElement, dayTpl);
             months.appendChild(monthElement);

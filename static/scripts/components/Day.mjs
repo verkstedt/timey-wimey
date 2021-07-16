@@ -34,6 +34,8 @@ class Day
 
     api;
 
+    refreshHistory;
+
     dayDateString;
 
     root = null;
@@ -42,10 +44,11 @@ class Day
 
     entries = [];
 
-    constructor (state, api, dayDateString)
+    constructor (state, api, refreshHistory, dayDateString)
     {
         this.state = state;
         this.api = api;
+        this.refreshHistory = refreshHistory;
         this.dayDateString = dayDateString;
     }
 
@@ -114,7 +117,12 @@ class Day
 
             const entryElement =
                 document.importNode(entryTplElement, true);
-            const entry = new Entry(this.state, this.api, entryId);
+            const entry = new Entry(
+                this.state,
+                this.api,
+                this.refreshHistory,
+                entryId,
+            );
             this.entries.push(entry);
             entry.bind(entryElement);
             entries.appendChild(entryElement);
