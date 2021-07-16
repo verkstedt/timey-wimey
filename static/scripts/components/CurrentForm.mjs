@@ -1,4 +1,5 @@
 import setSelectValues from '../utils/setSelectValues.mjs';
+import hasFocusedInput from '../utils/hasFocusedInput.mjs';
 
 class CurrentForm
 {
@@ -126,6 +127,12 @@ class CurrentForm
 
     reflectState ()
     {
+        // Bail if an input is focused
+        if (hasFocusedInput(this.root))
+        {
+            return;
+        }
+
         const {
             projects = [],
             currentEntry,

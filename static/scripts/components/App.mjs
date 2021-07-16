@@ -1,4 +1,5 @@
 import areEqual from '../utils/areEqual.mjs';
+import hasFocusedInput from '../utils/hasFocusedInput.mjs';
 
 import LoginForm from './LoginForm.mjs';
 import CurrentForm from './CurrentForm.mjs';
@@ -102,13 +103,8 @@ class App
             return;
         }
 
-        const { activeElement } = this.window.document.activeElement;
-
         // Don’t refresh if a input is focused
-        if (
-            (activeElement?.tagName === 'INPUT' && activeElement?.type !== 'submit')
-            || activeElement?.tagName === 'TEXTAREA'
-        )
+        if (hasFocusedInput(document))
         {
             return;
         }
