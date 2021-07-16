@@ -138,17 +138,18 @@ class App
             return;
         }
 
-        const currentEntry = await this.api.fetchCurrent();
-        const projects = await this.api.fetchProjects();
-
         const today = new Date((new Date()).toDateString());
         const endOfToday = new Date(today);
         endOfToday.setMilliseconds(24 * 60 * 60 * 1000 - 1);
         const startOfLastMonth = new Date(today);
         startOfLastMonth.setDate(1);
         startOfLastMonth.setMonth(startOfLastMonth.getMonth() - 1);
-        const history =
-            await this.api.fetchHistory(startOfLastMonth, endOfToday);
+
+        const [currentEntry, projects, history] = await Promise.all([
+            this.api.fetchCurrent(),
+            this.api.fetchProjects(),
+            this.api.fetchHistory(startOfLastMonth, endOfToday),
+        ]);
 
         this.isLoading = false;
         await this.state.set({ currentEntry, projects, history });
