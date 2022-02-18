@@ -35,7 +35,7 @@ class Entry
 
         // TODO Implement editing entries
         const win2 = window.open(
-            `https://do.clockodo.com/entries/editentry/?id=${entryId}`,
+            `https://my.clockodo.com/entries/editentry/?id=${entryId}`,
         );
         this.refreshAfterWindowCloses(win2);
     }
@@ -47,7 +47,7 @@ class Entry
 
         // TODO Implement splitting entries
         const win2 = window.open(
-            `https://do.clockodo.com/entries/split/?id=${entryId}`,
+            `https://my.clockodo.com/entries/split/?id=${entryId}`,
         );
         this.refreshAfterWindowCloses(win2);
     }
