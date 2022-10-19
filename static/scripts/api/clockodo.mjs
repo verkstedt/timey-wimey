@@ -108,19 +108,32 @@ class ApiClockodo
 
          const {
              customers_id: internalCustomerId,
+             customers_name: internalCustomerName,
              projects_id: internalProjectId,
+             projects_name: internalProjectName,
              services_id: internalServiceId,
+             services_name: internalServiceName,
              text: taskName,
              time_since: startDateString,
              time_until: endDateString,
          } = entry;
 
          const internalCustomer = this.cache.internalCustomers
-             .get(internalCustomerId);
+             .get(internalCustomerId) || {
+                 id: Number(internalCustomerId),
+                 name: internalCustomerName,
+                 projectId: new Set([Number(internalProjectId)]),
+             };
          const internalProject = this.cache.internalProjects
-             .get(internalProjectId);
+             .get(internalProjectId) || {
+                 id: Number(internalProjectId),
+                 name: internalProjectName,
+             };
          const internalService = this.cache.internalServices
-             .get(internalServiceId);
+             .get(internalServiceId) || {
+                 id: Number(internalServiceId),
+                 name: internalServiceName,
+             };
 
          return {
              id: entry.id,
