@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 // TODO Make sure abstraction layer works fine with other APIs:
 //      - clockify: https://clockify.me/developers-api
 //      - toggl: https://github.com/toggl/toggl_api_docs/blob/master/toggl_api.md
@@ -120,20 +118,20 @@ class ApiClockodo
 
          const internalCustomer = this.cache.internalCustomers
              .get(internalCustomerId) || {
-                 id: Number(internalCustomerId),
-                 name: internalCustomerName,
-                 projectId: new Set([Number(internalProjectId)]),
-             };
+             id: Number(internalCustomerId),
+             name: internalCustomerName,
+             projectId: new Set([Number(internalProjectId)]),
+         };
          const internalProject = this.cache.internalProjects
              .get(internalProjectId) || {
-                 id: Number(internalProjectId),
-                 name: internalProjectName,
-             };
+             id: Number(internalProjectId),
+             name: internalProjectName,
+         };
          const internalService = this.cache.internalServices
              .get(internalServiceId) || {
-                 id: Number(internalServiceId),
-                 name: internalServiceName,
-             };
+             id: Number(internalServiceId),
+             name: internalServiceName,
+         };
 
          return {
              id: entry.id,
@@ -448,7 +446,6 @@ class ApiClockodo
     getProjectCustomerId (projectId)
     {
         let projectCustomerId = null;
-        // eslint-disable-next-line no-restricted-syntax
         for (const customer of this.cache.internalCustomers.values())
         {
             if (customer.projectIds.has(projectId))
