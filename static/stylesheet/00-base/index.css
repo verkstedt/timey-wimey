@@ -23,6 +23,18 @@
     background: var(--colour-background);
 }
 
+@media (prefers-color-scheme: dark)
+{
+    :root
+    {
+        color-scheme: dark;
+
+        --colour-text: hsl(0, 0%, 85%);
+        --colour-secondary-text: hsl(0, 0%, 89%);
+        --colour-background: hsl(0, 0%, 2%);
+    }
+}
+
 *,
 *::before,
 *::after
