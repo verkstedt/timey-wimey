@@ -9,10 +9,6 @@
     --colour-text: hsl(0, 0%, 15%);
     --colour-secondary-text: hsl(0, 0%, 35%);
     --colour-background: hsl(0, 0%, 98%);
-    --colour-success: green;
-    --colour-warning: orange;
-    --colour-danger: red;
-    --colour-error: var(--colour-danger);
 
     /* z-indexes */
     --z-index-sticky-header-3: 1;
