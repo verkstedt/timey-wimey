@@ -14,7 +14,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: hsla(0, 0%, 100%, 75%);
+    background: hsla(0, 0%, var(--colour-background-l), 75%);
 }
 
 .m-loader__animation::before
