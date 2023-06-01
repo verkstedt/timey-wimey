@@ -6,9 +6,12 @@
     --horizontal-spacing: 1.5rem;
 
     /* colours */
-    --colour-text: hsl(0, 0%, 15%);
-    --colour-secondary-text: hsl(0, 0%, 35%);
-    --colour-background: hsl(0, 0%, 98%);
+    --colour-text-l: 15%;
+    --colour-text: hsl(0, 0%, var(--colour-text-l));
+    --colour-secondary-text-l: 35%;
+    --colour-secondary-text: hsl(0, 0%, var(--colour-secondary-text-l));
+    --colour-background-l: 98%;
+    --colour-background: hsl(0, 0%, var(--colour-background-l));
 
     /* z-indexes */
     --z-index-sticky-header-3: 1;
@@ -29,9 +32,9 @@
     {
         color-scheme: dark;
 
-        --colour-text: hsl(0, 0%, 85%);
-        --colour-secondary-text: hsl(0, 0%, 89%);
-        --colour-background: hsl(0, 0%, 2%);
+        --colour-text-l: 85%;
+        --colour-secondary-text-l: 89%;
+        --colour-background-l: 2%;
     }
 }
 
