@@ -1,8 +1,15 @@
+/**
+ * @link https://www.clockodo.com/en/api/
+ */
+
 // TODO Make sure abstraction layer works fine with other APIs:
 //      - clockify: https://clockify.me/developers-api
 //      - toggl: https://github.com/toggl/toggl_api_docs/blob/master/toggl_api.md
 
-const URL_BASE = 'https://my.clockodo.com/api';
+const URL_BASE = 'https://my.clockodo.com/api/';
+
+const APP_NAME = 'Timey-wimey';
+const APP_EMAIL = 'info@verkstedt.com';
 
 class ApiClockodo
 {
@@ -34,9 +41,6 @@ class ApiClockodo
          return {
              id: Number(id),
              name,
-             projectIds: new Set(
-                 customer.projects.map((project) => Number(project.id)),
-             ),
          };
      }
 
@@ -45,11 +49,15 @@ class ApiClockodo
          const {
              id,
              name,
+             customers_id: customerId,
+             billable_default: billableDefault,
          } = project;
 
          return {
              id: Number(id),
              name,
+             customerId,
+             billableDefault,
          };
      }
 
@@ -150,44 +158,21 @@ class ApiClockodo
 
      static formatDate (date)
      {
-         const d = new Date(date);
-         d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-         return d.toISOString().replace('T', ' ').replace(/\..*$/, '');
+         return date.toISOString().replace(/\.\d*/, '');
      }
 
      updateCache (data)
      {
          if (data.projects)
          {
-             Object.values(data.projects).forEach(
-                 (rawCustomerOrProject) => {
-                     let rawProjects;
-                     if (!rawCustomerOrProject.projects)
-                     {
-                         rawProjects = [rawCustomerOrProject];
-                     }
-                     else
-                     {
-                         const rawCustomer = rawCustomerOrProject;
-                         this.cache.internalCustomers.set(
-                             Number(rawCustomer.id),
-                             this.constructor.mapInternalCustomer(
-                                 rawCustomer,
-                             ),
-                         );
-                         rawProjects = rawCustomer.projects;
-                     }
-
-                     rawProjects.forEach((rawProject) => {
-                         this.cache.internalProjects.set(
-                             Number(rawProject.id),
-                             this.constructor.mapInternalProject(
-                                 rawProject,
-                             ),
-                         );
-                     });
-                 },
-             );
+             Object.values(data.projects).forEach((rawProject) => {
+                 this.cache.internalProjects.set(
+                     Number(rawProject.id),
+                     this.constructor.mapInternalProject(
+                         rawProject,
+                     ),
+                 );
+             });
          }
          if (data.services)
          {
@@ -195,6 +180,15 @@ class ApiClockodo
                  this.cache.internalServices.set(
                      Number(rawService.id),
                      this.constructor.mapInternalService(rawService),
+                 );
+             });
+         }
+         if (data.customers)
+         {
+             Object.values(data.customers).forEach((rawCustomer) => {
+                 this.cache.internalCustomers.set(
+                     Number(rawCustomer.id),
+                     this.constructor.mapInternalCustomer(rawCustomer),
                  );
              });
          }
@@ -224,7 +218,7 @@ class ApiClockodo
         resource,
         { id = null, ...parameters } = {},
     ) => {
-        const url = new URL(`${URL_BASE}/${resource}`);
+        const url = new URL(resource, URL_BASE);
         if (id !== null)
         {
             url.pathname += `/${id}`;
@@ -235,6 +229,7 @@ class ApiClockodo
                 'Accept-Language': navigator.language.split('-')[0],
                 'X-ClockodoApiUser': this.user,
                 'X-ClockodoApiKey': this.key,
+                'X-Clockodo-External-Application': `${APP_NAME};${APP_EMAIL}`,
             },
         };
         if (Object.keys(parameters).length)
@@ -287,7 +282,7 @@ class ApiClockodo
 
     async fetchCurrent ()
     {
-        const result = await this.apiGet('clock/update');
+        const result = await this.apiGet('v2/clock');
         return this.mapEntry(result.running);
     }
 
@@ -295,7 +290,7 @@ class ApiClockodo
     {
         if (this.cache.internalCustomers.size === 0)
         {
-            await this.fetchCurrent();
+            await this.apiGet('v2/customers');
         }
         return this.cache.internalCustomers;
     }
@@ -304,7 +299,7 @@ class ApiClockodo
     {
         if (this.cache.internalProjects.size === 0)
         {
-            await this.fetchCurrent();
+            await this.apiGet('v2/projects');
         }
         return this.cache.internalProjects;
     }
@@ -313,27 +308,26 @@ class ApiClockodo
     {
         if (this.cache.internalServices.size === 0)
         {
-            await this.fetchCurrent();
+            await this.apiGet('v2/services');
         }
         return this.cache.internalServices;
     }
 
     async fetchProjects ()
     {
-        const internalCustomers = await this.fetchInternalCustomers();
-        const internalProjects = await this.fetchInternalProjects();
-        const internalServices = await this.fetchInternalServices();
+        const [internalCustomers, internalProjects, internalServices] =
+            await Promise.all([
+                await this.fetchInternalCustomers(),
+                await this.fetchInternalProjects(),
+                await this.fetchInternalServices(),
+            ]);
 
         // FIXME Not all project × service combinations make sense
         const projects = [];
         internalServices.forEach((internalService) => {
             internalProjects.forEach((internalProject) => {
                 const internalCustomer =
-                    Array.from(internalCustomers.values()).find(
-                        ({ projectIds }) => projectIds.has(
-                            internalProject.id,
-                        ),
-                    );
+                    internalCustomers.get(internalProject.customerId);
                 projects.push(
                     this.constructor.mapProject({
                         internalCustomer,
@@ -351,7 +345,7 @@ class ApiClockodo
 
     async fetchHistory (dateStart, dateEnd)
     {
-        const result = await this.apiGet('entries', {
+        const result = await this.apiGet('v2/entries', {
             time_since: this.constructor.formatDate(dateStart),
             time_until: this.constructor.formatDate(dateEnd),
         });
@@ -360,7 +354,7 @@ class ApiClockodo
 
     async stop (id)
     {
-        await this.apiDelete('clock', { id });
+        await this.apiDelete('v2/clock', { id });
     }
 
     async start (
@@ -379,9 +373,11 @@ class ApiClockodo
             .get(internalProjectId);
 
         const billableFlag =
-            (billable == null) ? internalProject.billable : billable;
+            (billable == null)
+                ? internalProject.billableDefault
+                : billable;
 
-        const response = await this.apiPost('clock', {
+        const response = await this.apiPost('v2/clock', {
             customers_id: internalCustomerId,
             projects_id: internalProjectId,
             services_id: internalServiceId,
@@ -438,29 +434,28 @@ class ApiClockodo
             params.billable = Number(billable);
         }
 
-        const response = await this.apiPut('entries', params);
+        const response = await this.apiPut('v2/entries', params);
 
         return this.mapEntry(response.entry);
     }
 
     getProjectCustomerId (projectId)
     {
-        let projectCustomerId = null;
-        for (const customer of this.cache.internalCustomers.values())
+        const project =
+            this.cache.internalProjects.get(projectId);
+        if (project === null)
         {
-            if (customer.projectIds.has(projectId))
-            {
-                projectCustomerId = customer.id;
-                break;
-            }
+            throw new Error(`Failed to determine project id=${projectId}`);
         }
 
-        if (projectCustomerId === null)
+        const customer =
+            this.cache.internalCustomers.get(project.customerId);
+        if (customer === null)
         {
             throw new Error(`Failed to determine customer for a project id=${projectId}`);
         }
 
-        return projectCustomerId;
+        return customer.id;
     }
 }
 
