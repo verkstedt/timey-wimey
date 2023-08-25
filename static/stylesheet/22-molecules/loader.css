@@ -13,11 +13,11 @@
 }
 
 .m-loader__animation::before {
-  animation: clock-content 2s infinite;
+  animation: m-loader_clockContent 2s infinite;
   content: '🕐';
 }
 
-@keyframes clock-content {
+@keyframes m-loader__clockContent {
   08.33% {
     content: '🕑';
   }
