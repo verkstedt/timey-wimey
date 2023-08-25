@@ -1,37 +1,32 @@
 {
-    "lang": "en-GB",
-    "name": "Wibbly wobbly timey trackey thingy",
-    "short_name": "timey–wimey",
-    "start_url": "/",
-    "display": "standalone",
-    "theme_color": "white",
-    "background_color": "white",
-    "categories": [
-        "time-tracking",
-        "time",
-        "tracking",
-        "clockodo"
-    ],
-    "icons": [
-        {
-            "src": "/media/icons/icon.svg",
-            "sizes": "any",
-            "type": "image/svg+xml"
-        },
-        {
-            "src": "/media/icons/icon-32.png",
-            "sizes": "32x32",
-            "type": "image/png"
-        },
-        {
-            "src": "/media/icons/icon-192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "/media/icons/icon-512.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        }
-    ]
+  "lang": "en-GB",
+  "name": "Wibbly wobbly timey trackey thingy",
+  "short_name": "timey–wimey",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "white",
+  "background_color": "white",
+  "categories": ["time-tracking", "time", "tracking", "clockodo"],
+  "icons": [
+    {
+      "src": "/media/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/media/icons/icon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/media/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/media/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }

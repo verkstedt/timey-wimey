@@ -1,6 +1,5 @@
-.o-month__header
-{
-    position: sticky;
-    top: 0;
-    z-index: var(--z-index-sticky-header-1);
+.o-month__header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-index-sticky-header-1);
 }

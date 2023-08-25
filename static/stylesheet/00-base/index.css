@@ -1,74 +1,67 @@
-:root
-{
-    /* sizes */
-    --line-height: 1rem;
-    --vertical-spacing: 1rem;
-    --horizontal-spacing: 1.5rem;
+:root {
+  /* sizes */
+  --line-height: 1rem;
+  --vertical-spacing: 1rem;
+  --horizontal-spacing: 1.5rem;
 
-    /* colours */
-    --colour-text-l: 15%;
-    --colour-text: hsl(0, 0%, var(--colour-text-l));
-    --colour-secondary-text-l: 35%;
-    --colour-secondary-text: hsl(0, 0%, var(--colour-secondary-text-l));
-    --colour-background-l: 98%;
-    --colour-background: hsl(0, 0%, var(--colour-background-l));
+  /* colours */
+  --colour-text-l: 15%;
+  --colour-text: hsl(0, 0%, var(--colour-text-l));
+  --colour-secondary-text-l: 35%;
+  --colour-secondary-text: hsl(0, 0%, var(--colour-secondary-text-l));
+  --colour-background-l: 98%;
+  --colour-background: hsl(0, 0%, var(--colour-background-l));
 
-    /* z-indexes */
-    --z-index-sticky-header-3: 1;
-    --z-index-sticky-header-2: 2;
-    --z-index-sticky-header-1: 3;
-    --z-index-page-message: 10;
+  /* z-indexes */
+  --z-index-sticky-header-3: 1;
+  --z-index-sticky-header-2: 2;
+  --z-index-sticky-header-1: 3;
+  --z-index-page-message: 10;
 
-    box-sizing: border-box;
-    color: var(--colour-text);
-    font-size: 1.3em;
-    font-family: sans-serif;
-    background: var(--colour-background);
+  box-sizing: border-box;
+  color: var(--colour-text);
+  font-size: 1.3em;
+  font-family: sans-serif;
+  background: var(--colour-background);
 }
 
-@media (prefers-color-scheme: dark)
-{
-    :root
-    {
-        color-scheme: dark;
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
 
-        --colour-text-l: 85%;
-        --colour-secondary-text-l: 89%;
-        --colour-background-l: 2%;
-    }
+    --colour-text-l: 85%;
+    --colour-secondary-text-l: 89%;
+    --colour-background-l: 2%;
+  }
 }
 
 *,
 *::before,
-*::after
-{
-    box-sizing: inherit;
+*::after {
+  box-sizing: inherit;
 }
 
 input,
 select,
 textarea,
-button
-{
-    font: inherit;
+button {
+  font: inherit;
 }
 
 p:where(:not(:last-child)),
 dl:where(:not(:last-child)),
 ul:where(:not(:last-child)),
 ol:where(:not(:last-child)),
-li:where(:not(:last-child))
-{
-    margin-block-start: 0;
-    margin-block-end: var(--vertical-spacing);
+li:where(:not(:last-child)) {
+  margin-block-start: 0;
+  margin-block-end: var(--vertical-spacing);
 }
 
 p:where(:last-child),
 dl:where(:last-child),
 ul:where(:last-child),
 ol:where(:last-child),
-li:where(:last-child)
-{
-    margin-block-start: 0;
-    margin-block-end: 0;
+li:where(:last-child) {
+  margin-block-start: 0;
+  margin-block-end: 0;
 }

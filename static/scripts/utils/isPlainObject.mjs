@@ -1,9 +1,5 @@
-function isPlainObject (obj)
-{
-    return (
-        obj !== null
-        && Object.getPrototypeOf(obj) === Object.prototype
-    );
+function isPlainObject(obj) {
+  return obj !== null && Object.getPrototypeOf(obj) === Object.prototype
 }
 
-export default isPlainObject;
+export default isPlainObject

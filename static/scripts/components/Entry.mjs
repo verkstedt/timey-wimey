@@ -1,125 +1,111 @@
-class Entry
-{
-    state;
+class Entry {
+  state
 
-    api;
+  api
 
-    refreshHistory;
+  refreshHistory
 
-    entryId;
+  entryId
 
-    root = null;
+  root = null
 
-    constructor (state, api, refreshHistory, entryId)
-    {
-        this.state = state;
-        this.api = api;
-        this.refreshHistory = refreshHistory;
-        this.entryId = entryId;
+  constructor(state, api, refreshHistory, entryId) {
+    this.state = state
+    this.api = api
+    this.refreshHistory = refreshHistory
+    this.entryId = entryId
 
-        this.handleEditClick = this.handleEditClick.bind(this);
-        this.handleSplitClick = this.handleSplitClick.bind(this);
-    }
+    this.handleEditClick = this.handleEditClick.bind(this)
+    this.handleSplitClick = this.handleSplitClick.bind(this)
+  }
 
-    static getEntryIdFromEvent (event)
-    {
-        const element = event.currentTarget;
-        const container = element.closest('[data-component="entry"]');
-        return container.dataset.entryId;
-    }
+  static getEntryIdFromEvent(event) {
+    const element = event.currentTarget
+    const container = element.closest('[data-component="entry"]')
+    return container.dataset.entryId
+  }
 
-    handleEditClick (event)
-    {
-        event.preventDefault();
-        const entryId = Entry.getEntryIdFromEvent(event);
+  handleEditClick(event) {
+    event.preventDefault()
+    const entryId = Entry.getEntryIdFromEvent(event)
 
-        // TODO Implement editing entries
-        const win2 = window.open(
-            `https://my.clockodo.com/entries/editentry/?id=${entryId}`,
-        );
-        this.refreshAfterWindowCloses(win2);
-    }
+    // TODO Implement editing entries
+    const win2 = window.open(
+      `https://my.clockodo.com/entries/editentry/?id=${entryId}`
+    )
+    this.refreshAfterWindowCloses(win2)
+  }
 
-    handleSplitClick (event)
-    {
-        event.preventDefault();
-        const entryId = Entry.getEntryIdFromEvent(event);
+  handleSplitClick(event) {
+    event.preventDefault()
+    const entryId = Entry.getEntryIdFromEvent(event)
 
-        // TODO Implement splitting entries
-        const win2 = window.open(
-            `https://my.clockodo.com/entries/split/?id=${entryId}`,
-        );
-        this.refreshAfterWindowCloses(win2);
-    }
+    // TODO Implement splitting entries
+    const win2 = window.open(
+      `https://my.clockodo.com/entries/split/?id=${entryId}`
+    )
+    this.refreshAfterWindowCloses(win2)
+  }
 
-    refreshAfterWindowCloses (win)
-    {
-        const id = window.setInterval(() => {
-            if (win.closed)
-            {
-                window.clearInterval(id);
-                this.refreshHistory();
-            }
-        }, 200);
-    }
+  refreshAfterWindowCloses(win) {
+    const id = window.setInterval(() => {
+      if (win.closed) {
+        window.clearInterval(id)
+        this.refreshHistory()
+      }
+    }, 200)
+  }
 
-    async bind (root)
-    {
-        this.root = root;
+  async bind(root) {
+    this.root = root
 
-        this.root.dataset.entryId = this.entryId;
+    this.root.dataset.entryId = this.entryId
 
-        root.querySelector('[data-component="edit"]')
-            .addEventListener('click', this.handleEditClick);
-        root.querySelector('[data-component="split"]')
-            .addEventListener('click', this.handleSplitClick);
+    root
+      .querySelector('[data-component="edit"]')
+      .addEventListener('click', this.handleEditClick)
+    root
+      .querySelector('[data-component="split"]')
+      .addEventListener('click', this.handleSplitClick)
 
-        this.reflectState();
-    }
+    this.reflectState()
+  }
 
-    async unbind ()
-    {
-        this.root = null;
-    }
+  async unbind() {
+    this.root = null
+  }
 
-    reflectState ()
-    {
-        // TODO <time is=tw-time />
-        const timeFormatter = new Intl.DateTimeFormat(
-            undefined,
-            {
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: false,
-            },
-        );
+  reflectState() {
+    // TODO <time is=tw-time />
+    const timeFormatter = new Intl.DateTimeFormat(undefined, {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: false,
+    })
 
-        const { history } = this.state.get();
-        const entry = history.find(({ id }) => id === this.entryId);
+    const { history } = this.state.get()
+    const entry = history.find(({ id }) => id === this.entryId)
 
-        this.root.querySelector('[name="entry-task"]')
-            .textContent = entry.task.value;
-        this.root.querySelector('[name="entry-project"]')
-            .textContent = `${entry.project.name}`;
+    this.root.querySelector('[name="entry-task"]').textContent =
+      entry.task.value
+    this.root.querySelector(
+      '[name="entry-project"]'
+    ).textContent = `${entry.project.name}`
 
-        const startElement = this.root.querySelector('[name="entry-start"]');
-        startElement.dateTime = entry.start;
-        startElement.textContent = timeFormatter.format(
-            new Date(entry.start),
-        );
+    const startElement = this.root.querySelector('[name="entry-start"]')
+    startElement.dateTime = entry.start
+    startElement.textContent = timeFormatter.format(new Date(entry.start))
 
-        const endElement = this.root.querySelector('[name="entry-end"]');
-        const durationElement = this.root.querySelector('[name="entry-duration"]');
-        endElement.dateTime = entry.end;
-        endElement.textContent = timeFormatter.format(
-            new Date(entry.end),
-        );
+    const endElement = this.root.querySelector('[name="entry-end"]')
+    const durationElement = this.root.querySelector('[name="entry-duration"]')
+    endElement.dateTime = entry.end
+    endElement.textContent = timeFormatter.format(new Date(entry.end))
 
-        const durationSec = Math.round(
-            (new Date(entry.end) - new Date(entry.start)) / 1000,
-        );
-        durationElement.dateTime = `PT${durationSec}S`;
-    }
+    const durationSec = Math.round(
+      (new Date(entry.end) - new Date(entry.start)) / 1000
+    )
+    durationElement.dateTime = `PT${durationSec}S`
+  }
 }
 
-export default Entry;
+export default Entry

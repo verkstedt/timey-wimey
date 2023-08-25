@@ -1,16 +1,14 @@
-.a-detailsSummary
-{
-    position: relative;
+.a-detailsSummary {
+  position: relative;
 }
 
-.a-detailsSummary::-webkit-details-marker
-{
-    --size: 1ex;
+.a-detailsSummary::-webkit-details-marker {
+  --size: 1ex;
 
-    position: absolute;
-    top: calc(1ch - var(--size) / 2);
-    left: calc(var(--size) * -1.5);
-    width: var(--size);
-    height: var(--size);
-    color: var(--colour-secondary-text);
+  position: absolute;
+  top: calc(1ch - var(--size) / 2);
+  left: calc(var(--size) * -1.5);
+  width: var(--size);
+  height: var(--size);
+  color: var(--colour-secondary-text);
 }

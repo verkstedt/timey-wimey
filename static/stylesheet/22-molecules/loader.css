@@ -1,39 +1,57 @@
-.m-loader__wrapper
-{
-    position: relative;
+.m-loader__wrapper {
+  position: relative;
 }
 
-.m-loader__animation:not([hidden])
-{
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: hsla(0, 0%, var(--colour-background-l), 75%);
+.m-loader__animation:not([hidden]) {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: hsla(0, 0%, var(--colour-background-l), 75%);
 }
 
-.m-loader__animation::before
-{
-    animation: clock-content 2s infinite;
-    content: '🕐';
+.m-loader__animation::before {
+  animation: clock-content 2s infinite;
+  content: '🕐';
 }
 
-@keyframes clock-content
-{
-    08.33% { content: '🕑'; }
-    16.66% { content: '🕒'; }
-    25.00% { content: '🕓'; }
-    33.33% { content: '🕔'; }
-    41.66% { content: '🕕'; }
-    50.00% { content: '🕖'; }
-    58.33% { content: '🕗'; }
-    66.66% { content: '🕘'; }
-    75.00% { content: '🕙'; }
-    83.33% { content: '🕚'; }
-    91.66% { content: '🕛'; }
+@keyframes clock-content {
+  08.33% {
+    content: '🕑';
+  }
+  16.66% {
+    content: '🕒';
+  }
+  25.00% {
+    content: '🕓';
+  }
+  33.33% {
+    content: '🕔';
+  }
+  41.66% {
+    content: '🕕';
+  }
+  50.00% {
+    content: '🕖';
+  }
+  58.33% {
+    content: '🕗';
+  }
+  66.66% {
+    content: '🕘';
+  }
+  75.00% {
+    content: '🕙';
+  }
+  83.33% {
+    content: '🕚';
+  }
+  91.66% {
+    content: '🕛';
+  }
 }

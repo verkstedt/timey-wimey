@@ -1,15 +1,12 @@
 .m-timer__label,
-.m-timer__value
-{
-    display: inline-block;
+.m-timer__value {
+  display: inline-block;
 }
 
-.m-timer__label::after
-{
-    content: ':';
+.m-timer__label::after {
+  content: ':';
 }
 
-.m-timer__value
-{
-    margin-inline-start: 0;
+.m-timer__value {
+  margin-inline-start: 0;
 }

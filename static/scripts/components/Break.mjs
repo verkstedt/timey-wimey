@@ -1,76 +1,64 @@
-import isToday from '../utils/isToday.mjs';
+import isToday from '../utils/isToday.mjs'
 
-class Break
-{
-    state;
+class Break {
+  state
 
-    api;
+  api
 
-    prevEntryId;
+  prevEntryId
 
-    entryId;
+  entryId
 
-    root = null;
+  root = null
 
-    constructor (state, prevEntryId, entryId)
-    {
-        this.state = state;
-        this.prevEntryId = prevEntryId;
-        this.entryId = entryId;
+  constructor(state, prevEntryId, entryId) {
+    this.state = state
+    this.prevEntryId = prevEntryId
+    this.entryId = entryId
+  }
+
+  async bind(root) {
+    this.root = root
+
+    this.reflectState()
+  }
+
+  async unbind() {
+    this.root = null
+  }
+
+  reflectState() {
+    const { history, currentEntry } = this.state.get()
+    const entry = history.find(({ id }) => id === this.entryId)
+    const entryEnd = entry.end
+    if (!this.prevEntryId && !isToday(new Date(entryEnd))) {
+      this.root.hidden = true
+      return
     }
 
-    async bind (root)
-    {
-        this.root = root;
+    const prevEntry = this.prevEntryId
+      ? history.find(({ id }) => id === this.prevEntryId)
+      : null
+    const prevEntryStart =
+      prevEntry?.start ||
+      (currentEntry
+        ? new Date(currentEntry.start)
+        : // TODO Should be ticking
+          new Date())
 
-        this.reflectState();
+    const durationElement = this.root.querySelector('[name="duration"]')
+
+    const durationSec = Math.round(
+      (new Date(entryEnd) - new Date(prevEntryStart)) / 1000
+    )
+
+    if (durationSec === 0) {
+      this.root.hidden = true
+    } else {
+      this.root.hidden = false
+      durationElement.dateTime = `PT${durationSec}S`
     }
-
-    async unbind ()
-    {
-        this.root = null;
-    }
-
-    reflectState ()
-    {
-        const { history, currentEntry } = this.state.get();
-        const entry = history.find(({ id }) => id === this.entryId);
-        const entryEnd = entry.end;
-        if (!this.prevEntryId && !isToday(new Date(entryEnd)))
-        {
-            this.root.hidden = true;
-            return;
-        }
-
-        const prevEntry =
-            this.prevEntryId
-                ? history.find(({ id }) => id === this.prevEntryId)
-                : null;
-        const prevEntryStart =
-            prevEntry?.start
-            || (
-                currentEntry
-                    ? new Date(currentEntry.start)
-                    // TODO Should be ticking
-                    : new Date()
-            );
-
-        const durationElement = this.root.querySelector('[name="duration"]');
-
-        const durationSec = Math.round(
-            (new Date(entryEnd) - new Date(prevEntryStart)) / 1000,
-        );
-
-        if (durationSec === 0)
-        {
-            this.root.hidden = true;
-        }
-        else
-        {
-            this.root.hidden = false;
-            durationElement.dateTime = `PT${durationSec}S`;
-        }
-    }
+  }
 }
 
-export default Break;
+export default Break

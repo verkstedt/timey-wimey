@@ -1,10 +1,8 @@
-timey-wimey
-===========
+# timey-wimey
 
 Alternative UI for [clockodo].
 
-Design principles
------------------
+## Design principles
 
 ### Code
 
@@ -18,16 +16,13 @@ Design principles
 
 - Clean and minimalistic.
 
-Credits
--------
+## Credits
 
 Created during [verkstedt]’s open Fridays.
 
-License
--------
+## License
 
 [ISC](./LICENSE)
-
 
 [browserslist]: ./browserslist
 [clockodo]: https://www.clockodo.com/en

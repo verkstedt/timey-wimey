@@ -1,32 +1,26 @@
-.o-progressTimer--day
-{
-    position: sticky;
-    top: calc(3 * var(--line-height) - 1px);
-    z-index: var(--z-index-sticky-header-3);
-    margin-block-start: 0;
-    padding-block-start: var(--vertical-spacing);
+.o-progressTimer--day {
+  position: sticky;
+  top: calc(3 * var(--line-height) - 1px);
+  z-index: var(--z-index-sticky-header-3);
+  margin-block-start: 0;
+  padding-block-start: var(--vertical-spacing);
 }
 
-@supports (flex-wrap: wrap)
-{
-    .o-progressTimer
-    {
-        display: flex;
-        flex-wrap: wrap;
-    }
+@supports (flex-wrap: wrap) {
+  .o-progressTimer {
+    display: flex;
+    flex-wrap: wrap;
+  }
 
-    .o-progressTimer__label--from
-    {
-        display: none;
-    }
+  .o-progressTimer__label--from {
+    display: none;
+  }
 
-    .o-progressTimer__label--to
-    {
-        display: none;
-    }
+  .o-progressTimer__label--to {
+    display: none;
+  }
 
-    .o-progressTimer__value--to::before
-    {
-        content: ' /';
-    }
+  .o-progressTimer__value--to::before {
+    content: ' /';
+  }
 }

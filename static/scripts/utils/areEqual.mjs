@@ -1,6 +1,5 @@
-function areEqual (a, b)
-{
-    return JSON.stringify(a) === JSON.stringify(b);
+function areEqual(a, b) {
+  return JSON.stringify(a) === JSON.stringify(b)
 }
 
-export default areEqual;
+export default areEqual

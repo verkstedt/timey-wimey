@@ -1,28 +1,22 @@
-.m-entry__task
-{
-    margin-block-end: 0;
+.m-entry__task {
+  margin-block-end: 0;
 }
 
-.m-entry__project
-{
-    font-style: italic;
+.m-entry__project {
+  font-style: italic;
 }
 
-.m-entry__timeframe
-{
-    color: var(--colour-secondary-text);
+.m-entry__timeframe {
+  color: var(--colour-secondary-text);
 }
 
-@supports (flex-wrap: wrap)
-{
-    .m-entry__times
-    {
-        display: flex;
-        justify-content: space-between;
-    }
+@supports (flex-wrap: wrap) {
+  .m-entry__times {
+    display: flex;
+    justify-content: space-between;
+  }
 
-    .m-entry__duration
-    {
-        order: 2;
-    }
+  .m-entry__duration {
+    order: 2;
+  }
 }

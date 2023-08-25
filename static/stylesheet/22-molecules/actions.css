@@ -3,15 +3,13 @@
  * TODO Padding, when wrapping to multiple rows
  */
 
-.m-actions
-{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    margin-block-start: var(--vertical-spacing);
+.m-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-block-start: var(--vertical-spacing);
 }
 
-.m-actions__action--primary
-{
-    order: 1;
+.m-actions__action--primary {
+  order: 1;
 }
