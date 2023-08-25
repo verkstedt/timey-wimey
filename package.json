@@ -50,11 +50,5 @@
   "directories": {},
   "engines": {
     "node": "~10.19.0 ~12.16.0 ~13.8.0 ~14.17.0"
-  },
-  "browserslist": [
-    "defaults",
-    "maintained node versions",
-    "last 4 versions",
-    "not dead"
-  ]
+  }
 }
