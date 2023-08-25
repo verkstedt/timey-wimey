@@ -2,6 +2,12 @@
   "name": "@saji/timey-wimey",
   "version": "2.1.0",
   "description": "Wibbly wobbly timey trackey thingy",
+  "main": "index.js",
+  "module": "index.js",
+  "directories": {},
+  "engines": {
+    "node": "~10.19.0 ~12.16.0 ~13.8.0 ~14.17.0 ~18.16.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/verkstedt/timey-wimey.git"
@@ -45,11 +51,5 @@
     "shellcheck": "^0.4.1",
     "stylelint": "^15.10.1",
     "stylelint-no-unsupported-browser-features": "^7.0.0"
-  },
-  "main": "index.js",
-  "module": "index.js",
-  "directories": {},
-  "engines": {
-    "node": "~10.19.0 ~12.16.0 ~13.8.0 ~14.17.0"
   }
 }
