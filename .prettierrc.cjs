@@ -1,1 +1,1 @@
-module.exports = require('@verkstedt/eslint-config-verkstedt/prettier-config')
+module.exports = require('@verkstedt/eslint-config-verkstedt/prettier-config.json')

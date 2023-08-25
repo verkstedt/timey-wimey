@@ -1,8 +1,10 @@
 module.exports = {
-  extends: ['@verkstedt/verkstedt'],
+  extends: ['@verkstedt/verkstedt/vanilla'],
   env: {
-    node: true,
     browser: true,
+  },
+  parserOptions: {
+    ecmaVersion: 'latest',
   },
   rules: {
     'no-restricted-syntax': 'off',

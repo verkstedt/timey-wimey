@@ -208,7 +208,6 @@ class TwDuration extends HTMLTimeElement {
     }
 
     for (const [unit] of UNITS.keys()) {
-      // eslint-disable-next-line no-param-reassign
       context.querySelector(`span[data-unit=${unit}]`).textContent = 0
       context.querySelectorAll(`[data-unit=${unit}]`).forEach(setHidden)
     }
@@ -233,7 +232,6 @@ class TwDuration extends HTMLTimeElement {
       const paddedValue = ignoredFromStart
         ? value
         : String(value).padStart(2, '0')
-      // eslint-disable-next-line no-param-reassign
       context.querySelector(`span[data-unit=${unit}]`).textContent = paddedValue
 
       ignoredFromStart =
