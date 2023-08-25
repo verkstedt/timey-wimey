@@ -1,7 +1,0 @@
-{
-  "extends": "@saji/stylelint-config",
-  "plugins": ["stylelint-no-unsupported-browser-features"],
-  "rules": {
-    "selector-type-no-unknown": null
-  }
-}
