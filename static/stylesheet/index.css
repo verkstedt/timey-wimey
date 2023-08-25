@@ -1,17 +1,17 @@
 /* Base */
-@import './00-base/index.css';
+@import url('./00-base/index.css');
 
 /* Utils */
-@import './10-utils/index.css';
+@import url('./10-utils/index.css');
 
 /* Atoms */
-@import './21-atoms/index.css';
+@import url('./21-atoms/index.css');
 
 /* Molecules */
-@import './22-molecules/index.css';
+@import url('./22-molecules/index.css');
 
 /* Organisms */
-@import './23-organisms/index.css';
+@import url('./23-organisms/index.css');
 
 /* Templates */
-@import './24-templates/index.css';
+@import url('./24-templates/index.css');

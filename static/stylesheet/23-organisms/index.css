@@ -1,4 +1,4 @@
-@import './entryList.css';
-@import './progressTimer.css';
-@import './month.css';
-@import './day.css';
+@import url('./entryList.css');
+@import url('./progressTimer.css');
+@import url('./month.css');
+@import url('./day.css');

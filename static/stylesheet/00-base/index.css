@@ -6,11 +6,11 @@
 
   /* colours */
   --colour-text-l: 15%;
-  --colour-text: hsl(0, 0%, var(--colour-text-l));
+  --colour-text: hsl(0deg 0% var(--colour-text-l));
   --colour-secondary-text-l: 35%;
-  --colour-secondary-text: hsl(0, 0%, var(--colour-secondary-text-l));
+  --colour-secondary-text: hsl(0deg 0% var(--colour-secondary-text-l));
   --colour-background-l: 98%;
-  --colour-background: hsl(0, 0%, var(--colour-background-l));
+  --colour-background: hsl(0deg 0% var(--colour-background-l));
 
   /* z-indexes */
   --z-index-sticky-header-3: 1;

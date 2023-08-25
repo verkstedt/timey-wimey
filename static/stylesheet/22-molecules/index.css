@@ -1,6 +1,6 @@
-@import './actions.css';
-@import './timer.css';
-@import './entry.css';
-@import './break.css';
-@import './loader.css';
-@import './pageMessage.css';
+@import url('./actions.css');
+@import url('./timer.css');
+@import url('./entry.css');
+@import url('./break.css');
+@import url('./loader.css');
+@import url('./pageMessage.css');

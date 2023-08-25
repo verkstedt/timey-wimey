@@ -1,5 +1,5 @@
-@import './input.css';
-@import './duration.css';
-@import './timeframe.css';
-@import './button.css';
-@import './detailsSummary.css';
+@import url('./input.css');
+@import url('./duration.css');
+@import url('./timeframe.css');
+@import url('./button.css');
+@import url('./detailsSummary.css');
