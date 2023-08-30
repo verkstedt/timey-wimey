@@ -17,7 +17,6 @@ class CurrentForm extends AppElement {
     this.projectInputValue = event.target.value
   }
 
-
   #handleTaskChange() {
     if (this.taskInputValue === '') {
       return
@@ -36,12 +35,12 @@ class CurrentForm extends AppElement {
     this.projectInputValue = project
   }
 
-  get taskValue () {
+  get taskValue() {
     const { currentEntry } = this.state.get()
-    return this.taskInputValue ?? (currentEntry?.task?.value || '') 
+    return this.taskInputValue ?? (currentEntry?.task?.value || '')
   }
 
-  get projectValue () {
+  get projectValue() {
     const { currentEntry } = this.state.get()
     console.log(this.state.get())
     return this.projectInputValue ?? currentEntry?.project?.id
@@ -176,12 +175,17 @@ class CurrentForm extends AppElement {
             class="m-formElement__input a-input a-input--select"
             name="project"
             required
-          sdfsdfvalue=${this.projectValue}
+            sdfsdfvalue=${this.projectValue}
             @input=${this.#handleProjectInput}
-              >
+          >
             ${projects.map(
               (option) =>
-                html`<option value=${option.id} ?selected=${option.id === this.projectValue}>${option.name}</option>`
+                html`<option
+                  value=${option.id}
+                  ?selected=${option.id === this.projectValue}
+                >
+                  ${option.name}
+                </option>`
             )}
           </select>
         </p>
@@ -210,7 +214,7 @@ class CurrentForm extends AppElement {
               class="a-duration"
               name="duration"
               precision="s"
-              >
+            >
             </time>
           </dd>
         </dl>
