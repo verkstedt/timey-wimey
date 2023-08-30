@@ -43,7 +43,7 @@ class CurrentForm extends AppElement {
 
   get projectValue () {
     const { currentEntry } = this.state.get()
-
+    console.log(this.state.get())
     return this.projectInputValue ?? currentEntry?.project?.id
   }
 
@@ -53,6 +53,7 @@ class CurrentForm extends AppElement {
     const history = this.#getHistoryWithCurrentEntryStopped()
     const currentEntry = await this.api.start(this.projectValue, this.taskValue)
     this.state.set({ currentEntry, history })
+    window.location.reload()
   }
 
   async #handleChange(event) {
@@ -71,7 +72,7 @@ class CurrentForm extends AppElement {
     this.state.set({ currentEntry: newCurrentEntry })
   }
 
-  #handleStop(event) {
+  async #handleStop(event) {
     event.preventDefault()
 
     const {
@@ -79,8 +80,9 @@ class CurrentForm extends AppElement {
     } = this.state.get()
 
     const history = this.#getHistoryWithCurrentEntryStopped()
-    this.api.stop(currentEntryId)
-    this.state.set({ currentEntry: null, history })
+    await this.api.stop(currentEntryId)
+    await this.state.set({ currentEntry: null, history })
+    window.location.reload()
   }
 
   #getHistoryWithCurrentEntryStopped() {
@@ -174,12 +176,12 @@ class CurrentForm extends AppElement {
             class="m-formElement__input a-input a-input--select"
             name="project"
             required
-            .value=${this.projectValue}
+          sdfsdfvalue=${this.projectValue}
             @input=${this.#handleProjectInput}
               >
             ${projects.map(
               (option) =>
-                html`<option value=${option.id}>${option.name}</option>`
+                html`<option value=${option.id} ?selected=${option.id === this.projectValue}>${option.name}</option>`
             )}
           </select>
         </p>
