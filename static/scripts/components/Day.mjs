@@ -1,5 +1,5 @@
 import './Entry.mjs'
-import Break from './Break.mjs'
+import './Break.mjs'
 
 // FIXME Util
 function createDayNameFormatter() {
@@ -83,15 +83,14 @@ class Day {
     )}S`
 
     const entriesRoot = this.root.querySelector('[name="entries"]')
-    const breakTplElement = this.breakTpl.content.children[0]
     const entries = document.createDocumentFragment()
     let prevEntryId
     dayHistoryEntries.forEach(({ id: entryId }) => {
-      const entryBreakElement = document.importNode(breakTplElement, true)
-      const entryBreak = new Break(this.state, prevEntryId, entryId)
-      this.entries.push(entryBreak)
-      entryBreak.bind(entryBreakElement)
-      entries.appendChild(entryBreakElement)
+      const twBreak = document.createElement('tw-break')
+      twBreak.state = this.state
+      twBreak.prevEntryId = prevEntryId
+      twBreak.entryId = entryId
+      entries.appendChild(twBreak)
 
       // TODO <tw-entry .state={this.state} .api={this.api} .refreshHistory={this.refreshHistory} .entryId={entryId} />
       const entry = document.createElement('tw-entry')
