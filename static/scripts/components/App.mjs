@@ -1,7 +1,7 @@
 import areEqual from '../utils/areEqual.mjs'
 import hasFocusedInput from '../utils/hasFocusedInput.mjs'
 
-import LoginForm from './LoginForm.mjs'
+import './LoginForm.mjs'
 import CurrentForm from './CurrentForm.mjs'
 import History from './History.mjs'
 
@@ -35,7 +35,6 @@ class App {
     this.handlePageReactivation = this.handlePageReactivation.bind(this)
     this.refreshHistory = this.refreshHistory.bind(this)
 
-    this.loginForm = new LoginForm(this.state, this.api)
     this.currentForm = new CurrentForm(this.state, this.api)
     this.history = new History(this.state, this.api, this.refreshHistory)
 
@@ -49,7 +48,10 @@ class App {
 
     this.loadingMessage = this.root.querySelector('#loading-message')
 
-    this.loginForm.bind(this.root.querySelector('#login'))
+    const loginForm = this.root.querySelector('tw-login-form')
+    loginForm.state = this.state
+    loginForm.api = this.api
+
     this.currentForm.bind(this.root.querySelector('#current'))
     this.history.bind(
       this.root.querySelector('#history'),

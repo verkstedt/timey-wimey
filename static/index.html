@@ -32,62 +32,10 @@
       type="module"
       src="./scripts/index.mjs"
       onerror="document.body.textContent = 'Some sort of failure happened 🤷'"
-    ></script>
-
-    <form
-      class="o-form m-loader__wrapper u-unauthorized"
-      id="login"
-      method="POST"
     >
-      <p class="m-formElement">
-        <label class="m-formElement__label" for="login_login"> E-Mail </label>
-        <input
-          id="login_login"
-          class="m-formElement__input a-input a-input--login"
-          type="email"
-          name="login"
-          autocomplete="email"
-          required
-        />
-      </p>
-      <p class="m-formElement">
-        <label class="m-formElement__label" for="login_password">
-          <abbr>API</abbr> token
-        </label>
-        <input
-          id="login_password"
-          class="m-formElement__input a-input a-input--password"
-          type="password"
-          name="password"
-          autocomplete="current-password"
-          aria-describedby="login_password_desc"
-          required
-        />
-      </p>
-      <p id="login_password_desc">
-        You can find your API token on
-        <a
-          target="_blank"
-          rel="noopener nofollow"
-          href="https://my.clockodo.com/en/users/editself#grouphead_api"
-          >Clockodo settings page</a
-        >.
-      </p>
-      <div class="m-actions">
-        <button
-          class="a-button a-button--primary m-actions__action"
-          type="submit"
-        >
-          Let me track my time
-        </button>
-      </div>
-
-      <!-- TODO <tw-loader active /> -->
-      <div hidden data-loader class="m-loader__animation" aria-live="polite">
-        Things are happening…
-      </div>
-    </form>
-
+    </script>
+    <!-- TODO: handle properties -->
+    <tw-login-form></tw-login-form>
     <aside
       class="m-pageMessage u-authorized"
       id="loading-message"
