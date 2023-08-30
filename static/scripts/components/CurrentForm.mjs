@@ -42,7 +42,6 @@ class CurrentForm extends AppElement {
 
   get projectValue() {
     const { currentEntry } = this.state.get()
-    console.log(this.state.get())
     return this.projectInputValue ?? currentEntry?.project?.id
   }
 
@@ -55,7 +54,7 @@ class CurrentForm extends AppElement {
     window.location.reload()
   }
 
-  async #handleChange(event) {
+  async #handleChange() {
     const {
       currentEntry: { id: currentEntryId },
     } = this.state.get()
