@@ -1,50 +1,19 @@
-class Entry {
-  state
+import { html } from 'lit'
 
-  api
+import AppElement from './AppElement.mjs'
 
-  refreshHistory
+const timeFormatter = new Intl.DateTimeFormat(undefined, {
+  hour: 'numeric',
+  minute: '2-digit',
+  hour12: false,
+})
 
-  entryId
-
-  root = null
-
-  constructor(state, api, refreshHistory, entryId) {
-    this.state = state
-    this.api = api
-    this.refreshHistory = refreshHistory
-    this.entryId = entryId
-
-    this.handleEditClick = this.handleEditClick.bind(this)
-    this.handleSplitClick = this.handleSplitClick.bind(this)
-  }
-
-  static getEntryIdFromEvent(event) {
-    const element = event.currentTarget
-    const container = element.closest('[data-component="entry"]')
-    return container.dataset.entryId
-  }
-
-  handleEditClick(event) {
-    event.preventDefault()
-    const entryId = Entry.getEntryIdFromEvent(event)
-
-    // TODO Implement editing entries
-    const win2 = window.open(
-      `https://my.clockodo.com/entries/editentry/?id=${entryId}`
-    )
-    this.refreshAfterWindowCloses(win2)
-  }
-
-  handleSplitClick(event) {
-    event.preventDefault()
-    const entryId = Entry.getEntryIdFromEvent(event)
-
-    // TODO Implement splitting entries
-    const win2 = window.open(
-      `https://my.clockodo.com/entries/split/?id=${entryId}`
-    )
-    this.refreshAfterWindowCloses(win2)
+class Entry extends AppElement {
+  static properties = {
+    state: { state: true, attribute: false },
+    api: { state: true, attribute: false },
+    refreshHistory: { state: true, attribute: false },
+    entryId: { type: String, state: true, attribute: true },
   }
 
   refreshAfterWindowCloses(win) {
@@ -56,56 +25,76 @@ class Entry {
     }, 200)
   }
 
-  async bind(root) {
-    this.root = root
-
-    this.root.dataset.entryId = this.entryId
-
-    root
-      .querySelector('[data-component="edit"]')
-      .addEventListener('click', this.handleEditClick)
-    root
-      .querySelector('[data-component="split"]')
-      .addEventListener('click', this.handleSplitClick)
-
-    this.reflectState()
-  }
-
-  async unbind() {
-    this.root = null
-  }
-
-  reflectState() {
-    // TODO <time is=tw-time />
-    const timeFormatter = new Intl.DateTimeFormat(undefined, {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: false,
-    })
-
-    const { history } = this.state.get()
-    const entry = history.find(({ id }) => id === this.entryId)
-
-    this.root.querySelector('[name="entry-task"]').textContent =
-      entry.task.value
-    this.root.querySelector(
-      '[name="entry-project"]'
-    ).textContent = `${entry.project.name}`
-
-    const startElement = this.root.querySelector('[name="entry-start"]')
-    startElement.dateTime = entry.start
-    startElement.textContent = timeFormatter.format(new Date(entry.start))
-
-    const endElement = this.root.querySelector('[name="entry-end"]')
-    const durationElement = this.root.querySelector('[name="entry-duration"]')
-    endElement.dateTime = entry.end
-    endElement.textContent = timeFormatter.format(new Date(entry.end))
-
-    const durationSec = Math.round(
-      (new Date(entry.end) - new Date(entry.start)) / 1000
+  #handleEditClick() {
+    // TODO Implement editing entries
+    const win2 = window.open(
+      `https://my.clockodo.com/entries/editentry/?id=${this.entryId}`
     )
-    durationElement.dateTime = `PT${durationSec}S`
+    this.refreshAfterWindowCloses(win2)
+  }
+
+  #handleSplitClick() {
+    // TODO Implement splitting entries
+    const win2 = window.open(
+      `https://my.clockodo.com/entries/split/?id=${this.entryId}`
+    )
+    this.refreshAfterWindowCloses(win2)
+  }
+
+  render() {
+    const { history } = this.state.get()
+    const entry = history.find((e) => e.id === this.entryId)
+
+    return html`
+      <li class="o-entryList__item o-entryList__item--entry m-entry">
+        <h4 name="entry-task" class="m-entry__task">${entry.task.value}</h4>
+        <span class="u-sr">filed under</span>
+        <span name="entry-project" class="m-entry__project">
+          ${entry.project.name}
+        </span>
+        <div class="m-entry__times">
+          <div class="m-entry__duration">
+            <span class="u-sr">for</span>
+            <time
+              is="tw-duration"
+              name="entry-duration"
+              class="a-duration"
+              .dateTime=${`PT${Math.round(
+                (new Date(entry.end) - new Date(entry.start)) / 1000
+              )}S`}
+            >
+            </time>
+          </div>
+          <div class="m-entry__timeframe a-timeframe">
+            <span class="u-sr">from</span>
+            <time class="a-timeframe__from" name="entry-start">
+              ${timeFormatter.format(new Date(entry.start))}
+            </time>
+            <span class="u-sr">to</span>
+            <time class="a-timeframe__to" name="entry-end">
+              ${timeFormatter.format(new Date(entry.end))}
+            </time>
+          </div>
+        </div>
+        <div class="m-actions">
+          <button
+            class="a-button m-actions__action"
+            type="button"
+            @click=${this.#handleSplitClick}
+          >
+            Split
+          </button>
+          <button
+            class="a-button m-actions__action"
+            type="button"
+            @click=${this.#handleEditClick}
+          >
+            Edit
+          </button>
+        </div>
+      </li>
+    `
   }
 }
 
-export default Entry
+customElements.define('tw-entry', Entry)

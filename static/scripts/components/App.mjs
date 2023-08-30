@@ -1,9 +1,9 @@
 import areEqual from '../utils/areEqual.mjs'
 import hasFocusedInput from '../utils/hasFocusedInput.mjs'
 
-import LoginForm from './LoginForm.mjs'
-import CurrentForm from './CurrentForm.mjs'
-import History from './History.mjs'
+import './LoginForm.mjs'
+import './CurrentForm.mjs'
+import './History.mjs'
 
 class App {
   static REFRESH_THROTTLE_MS = 5000
@@ -20,8 +20,6 @@ class App {
 
   currentForm
 
-  history
-
   root = null
 
   lastRefreshTimestampMs = 0
@@ -35,9 +33,7 @@ class App {
     this.handlePageReactivation = this.handlePageReactivation.bind(this)
     this.refreshHistory = this.refreshHistory.bind(this)
 
-    this.loginForm = new LoginForm(this.state, this.api)
-    this.currentForm = new CurrentForm(this.state, this.api)
-    this.history = new History(this.state, this.api, this.refreshHistory)
+    // this.currentForm = new CurrentForm(this.state, this.api)
 
     this.state.addEventListener(this.handleStateChange)
 
@@ -49,12 +45,21 @@ class App {
 
     this.loadingMessage = this.root.querySelector('#loading-message')
 
-    this.loginForm.bind(this.root.querySelector('#login'))
-    this.currentForm.bind(this.root.querySelector('#current'))
-    this.history.bind(
-      this.root.querySelector('#history'),
-      this.root.querySelector('#month-tpl')
-    )
+    const loginForm = this.root.querySelector('tw-login-form')
+    loginForm.state = this.state
+    loginForm.api = this.api
+
+    const currentForm = this.root.querySelector('tw-current-form')
+    currentForm.state = this.state
+    currentForm.api = this.api
+
+    // this.currentForm.bind(this.root.querySelector('#current'))
+
+    const history = this.root.querySelector('tw-history')
+    history.api = this.api
+    history.refreshHistory = this.refreshHistory
+    history.state = this.state
+
     // TODO Log out
 
     this.reflectState()
@@ -154,11 +159,6 @@ class App {
     this.root.dataset.authorized = authorized ? 'true' : 'false'
 
     this.loadingMessage.hidden = !this.isLoading
-
-    if (authorized) {
-      this.currentForm.reflectState()
-      this.history.reflectState()
-    }
   }
 }
 
