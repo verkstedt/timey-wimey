@@ -43,13 +43,15 @@ class CurrentForm extends AppElement {
 
   get projectValue () {
     const { currentEntry } = this.state.get()
+
     return this.projectInputValue ?? currentEntry?.project?.id
   }
-  #handleSubmit(event) {
+
+  async #handleSubmit(event) {
     event.preventDefault()
 
     const history = this.#getHistoryWithCurrentEntryStopped()
-    const currentEntry = this.api.start(this.projectInputValue, this.taskInputValue)
+    const currentEntry = await this.api.start(this.projectValue, this.taskValue)
     this.state.set({ currentEntry, history })
   }
 
