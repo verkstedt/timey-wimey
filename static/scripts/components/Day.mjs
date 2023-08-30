@@ -1,4 +1,4 @@
-import Entry from './Entry.mjs'
+import './Entry.mjs'
 import Break from './Break.mjs'
 
 // FIXME Util
@@ -36,8 +36,6 @@ class Day {
 
   root = null
 
-  entryTpl = null
-
   entries = []
 
   constructor(state, api, refreshHistory, dayDateString) {
@@ -47,9 +45,8 @@ class Day {
     this.dayDateString = dayDateString
   }
 
-  async bind(root, entryTpl, breakTpl) {
+  async bind(root, breakTpl) {
     this.root = root
-    this.entryTpl = entryTpl
     this.breakTpl = breakTpl
 
     this.reflectState()
@@ -59,7 +56,6 @@ class Day {
     this.entries.forEach((entry) => entry.unbind())
 
     this.root = null
-    this.entryTpl = null
     this.breakTpl = null
   }
 
@@ -87,7 +83,6 @@ class Day {
     )}S`
 
     const entriesRoot = this.root.querySelector('[name="entries"]')
-    const entryTplElement = this.entryTpl.content.children[0]
     const breakTplElement = this.breakTpl.content.children[0]
     const entries = document.createDocumentFragment()
     let prevEntryId
@@ -98,16 +93,14 @@ class Day {
       entryBreak.bind(entryBreakElement)
       entries.appendChild(entryBreakElement)
 
-      const entryElement = document.importNode(entryTplElement, true)
-      const entry = new Entry(
-        this.state,
-        this.api,
-        this.refreshHistory,
-        entryId
-      )
-      this.entries.push(entry)
-      entry.bind(entryElement)
-      entries.appendChild(entryElement)
+      // TODO <tw-entry .state={this.state} .api={this.api} .refreshHistory={this.refreshHistory} .entryId={entryId} />
+      const entry = document.createElement('tw-entry')
+      entry.state = this.state
+      entry.api = this.api
+      entry.refreshHistory = this.refreshHistory
+      entry.entryId = entryId
+      entries.appendChild(entry)
+
       prevEntryId = entryId
     })
     entriesRoot.textContent = ''

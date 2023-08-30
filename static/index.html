@@ -18,6 +18,13 @@
       content="black-translucent"
     />
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <script type="importmap">
+      {
+        "imports": {
+          "lit": "https://cdn.jsdelivr.net/gh/lit/dist@2/all/lit-all.min.js"
+        }
+      }
+    </script>
     <service-worker href="/serviceWorker.mjs"></service-worker>
   </head>
   <body class="t-main" data-authorized="undefined">
