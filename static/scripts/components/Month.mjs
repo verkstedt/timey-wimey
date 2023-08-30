@@ -21,6 +21,14 @@ class Month extends AppElement {
     const monthHistoryEntries = history.filter(
       (entry) => entry.end && entry.start.startsWith(this.monthDateString)
     )
+    const dayKeys = new Set()
+    monthHistoryEntries.forEach((entry) => {
+      // / FIXME Should always be String
+      const start =
+        entry.start instanceof Date ? entry.start.toISOString() : entry.start
+      const dayKey = start.split('T')[0]
+      dayKeys.add(dayKey)
+    })
 
     return html`
       <section class="o-month">
@@ -54,16 +62,18 @@ class Month extends AppElement {
             </dl>
           </summary>
           <div name="days">
-            ${monthHistoryEntries.map(
-              ({ id: entryId }) => html`
-                <tw-entry
-                  .state=${this.state}
-                  .api=${this.api}
-                  .refreshHistory=${this.refreshHistory}
-                  .entryId=${entryId}
-                />
-              `
-            )}
+            ${Array.from(dayKeys)
+              .reverse()
+              .map(
+                (dayKey) => html`
+                  <tw-day
+                    .state=${this.state}
+                    .api=${this.api}
+                    .refreshHistory=${this.refreshHistory}
+                    .dayDateString=${dayKey}
+                  />
+                `
+              )}
           </div>
         </details>
       </section>
