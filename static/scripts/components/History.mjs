@@ -1,39 +1,20 @@
-import Month from './Month.mjs'
+import { html } from 'lit'
+import AppElement from './AppElement.mjs'
 
-class History {
-  state
+import './Month.mjs'
 
-  api
-
-  refreshHistory
-
-  root = null
-
-  monthTpl = null
-
-  months = []
-
-  constructor(state, api, refreshHistory) {
-    this.state = state
-    this.api = api
-    this.refreshHistory = refreshHistory
+class History extends AppElement {
+  static properties = {
+    state: { state: true, attribute: false },
+    api: { state: true, attribute: false },
+    refreshHistory: { state: true, attribute: false },
   }
 
-  async bind(root, monthTpl) {
-    this.root = root
-    this.monthTpl = monthTpl
-  }
+  render() {
+    if (!this.state) {
+      return 'Initialising' // TODO Remove this after App is refactored
+    }
 
-  async unbind() {
-    this.months.forEach((month) => month.unbind())
-
-    this.root = null
-    this.monthTpl = null
-  }
-
-  reflectState() {
-    const document = this.root.ownerDocument
-    const monthTplElement = this.monthTpl.content.children[0]
     const { history } = this.state.get()
     const monthKeys = new Set()
     history.forEach((item) => {
@@ -44,27 +25,20 @@ class History {
       monthKeys.add(monthKey)
     })
 
-    const months = document.createDocumentFragment()
-    Array.from(monthKeys)
-      .sort()
-      .reverse()
-      .forEach((monthKey) => {
-        const monthElement = document.importNode(monthTplElement, true)
-        const dayTpl = monthElement.querySelector('[name="day-tpl"]')
-        const month = new Month(
-          this.state,
-          this.api,
-          this.refreshHistory,
-          monthKey
-        )
-        this.months.push(month)
-        month.bind(monthElement, dayTpl)
-        months.appendChild(monthElement)
-      })
-
-    this.root.textContent = ''
-    this.root.appendChild(months)
+    return html`
+      ${Array.from(monthKeys)
+        .sort()
+        .reverse()
+        .map(
+          (monthKey) => html`<tw-month
+            .state=${this.state}
+            .api=${this.api}
+            .refreshHistory=${this.refreshHistory}
+            .monthDateString=${monthKey}
+          />`
+        )}
+    `
   }
 }
 
-export default History
+customElements.define('tw-history', History)

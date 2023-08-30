@@ -3,7 +3,7 @@ import hasFocusedInput from '../utils/hasFocusedInput.mjs'
 
 import './LoginForm.mjs'
 import CurrentForm from './CurrentForm.mjs'
-import History from './History.mjs'
+import './History.mjs'
 
 class App {
   static REFRESH_THROTTLE_MS = 5000
@@ -20,8 +20,6 @@ class App {
 
   currentForm
 
-  history
-
   root = null
 
   lastRefreshTimestampMs = 0
@@ -36,7 +34,6 @@ class App {
     this.refreshHistory = this.refreshHistory.bind(this)
 
     this.currentForm = new CurrentForm(this.state, this.api)
-    this.history = new History(this.state, this.api, this.refreshHistory)
 
     this.state.addEventListener(this.handleStateChange)
 
@@ -53,10 +50,12 @@ class App {
     loginForm.api = this.api
 
     this.currentForm.bind(this.root.querySelector('#current'))
-    this.history.bind(
-      this.root.querySelector('#history'),
-      this.root.querySelector('#month-tpl')
-    )
+
+    const history = this.root.querySelector('tw-history')
+    history.api = this.api
+    history.refreshHistory = this.refreshHistory
+    history.state = this.state
+
     // TODO Log out
 
     this.reflectState()
@@ -159,7 +158,6 @@ class App {
 
     if (authorized) {
       this.currentForm.reflectState()
-      this.history.reflectState()
     }
   }
 }
