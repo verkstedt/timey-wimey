@@ -4,6 +4,7 @@ import hasFocusedInput from '../utils/hasFocusedInput.mjs'
 import LoginForm from './LoginForm.mjs'
 import CurrentForm from './CurrentForm.mjs'
 import History from './History.mjs'
+import "./Appbar.mjs"
 
 class App {
   static REFRESH_THROTTLE_MS = 5000
@@ -56,6 +57,10 @@ class App {
       this.root.querySelector('#month-tpl')
     )
     // TODO Log out
+    const appbar = this.root.querySelector('#appbar')
+    const twAppbar = document.createElement('tw-appbar')
+    twAppbar.state = this.state
+    appbar.appendChild(twAppbar)
 
     this.reflectState()
 
