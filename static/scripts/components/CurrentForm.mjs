@@ -1,84 +1,51 @@
-import setSelectValues from '../utils/setSelectValues.mjs'
-import hasFocusedInput from '../utils/hasFocusedInput.mjs'
+import { html } from 'lit'
 
-class CurrentForm {
-  state
+import AppElement from './AppElement.mjs'
 
-  api
-
-  root = null
-
-  constructor(state, api) {
-    this.state = state
-    this.api = api
-
-    this.handleTaskChange = this.handleTaskChange.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
-    this.handleChange = this.handleChange.bind(this)
-    this.handleStop = this.handleStop.bind(this)
+class CurrentForm extends AppElement {
+  static properties = {
+    state: { state: true, attribute: false },
+    api: { state: true, attribute: false },
+    taskValue: { state: true, attribute: false },
+    projectValue: { state: true, attribute: false },
   }
 
-  async bind(root) {
-    this.root = root
-
-    this.root
-      .querySelector('[name=task]')
-      .addEventListener('change', this.handleTaskChange)
-    this.root.addEventListener('submit', this.handleSubmit)
-    this.root
-      .querySelector('[name=change]')
-      .addEventListener('click', this.handleChange)
-    this.root
-      .querySelector('[name=stop]')
-      .addEventListener('click', this.handleStop)
+  #handleTaskInput(event) {
+    this.taskValue = event.target.value
   }
 
-  async unbind() {
-    this.root.removeEventListener('submit', this.handleSubmit)
-    this.root
-      .querySelector('[name=change]')
-      .removeEventListener('click', this.handleChange)
-    this.root
-      .querySelector('[name=stop]')
-      .removeEventListener('click', this.handleStop)
-  }
-
-  handleTaskChange(event) {
-    const taskName = event.target.value
-
-    if (taskName === '') {
+  #handleTaskChange() {
+    if (this.taskValue === '') {
       return
     }
 
-    const taskListOption = Array.from(event.target.list.children).find(
-      (option) => option.value === taskName
+    const taskListOption = this.getTasksWithUsage().find(
+      (option) => option.taskName === this.taskValue
     )
 
     if (!taskListOption) {
       return
     }
 
-    const { project } = taskListOption.dataset
+    const { project } = taskListOption
 
-    this.root.querySelector('[name=project]').value = project
+    this.projectValue = project
   }
 
-  async handleSubmit(event) {
+  #handleSubmit(event) {
     event.preventDefault()
 
-    const { project, task } = this.getFormData()
+    const { project, task } = this.#getFormData()
 
-    await this.processUI(async () => {
-      const history = this.getHistoryWithCurrentEntryStopped()
-      const currentEntry = await this.api.start(project, task)
-      await this.state.set({ currentEntry, history })
-    })
+    const history = this.#getHistoryWithCurrentEntryStopped()
+    const currentEntry = this.api.start(project, task)
+    this.state.set({ currentEntry, history })
   }
 
-  async handleChange(event) {
+  #handleChange(event) {
     event.preventDefault()
 
-    const { project, task } = this.getFormData()
+    const { project, task } = this.#getFormData()
     const {
       currentEntry: { id: currentEntryId },
     } = this.state.get()
@@ -86,89 +53,26 @@ class CurrentForm {
       throw new Error('Cannot change — no task running.')
     }
 
-    await this.processUI(async () => {
-      const currentEntry = await this.api.update(currentEntryId, {
-        project,
-        task,
-      })
-      await this.state.set({ currentEntry })
+    const currentEntry = this.api.update(currentEntryId, {
+      project,
+      task,
     })
+    this.state.set({ currentEntry })
   }
 
-  async handleStop(event) {
+  #handleStop(event) {
     event.preventDefault()
 
     const {
       currentEntry: { id: currentEntryId },
     } = this.state.get()
 
-    await this.processUI(async () => {
-      const history = this.getHistoryWithCurrentEntryStopped()
-      await this.api.stop(currentEntryId)
-      await this.state.set({ currentEntry: null, history })
-    })
+    const history = this.#getHistoryWithCurrentEntryStopped()
+    this.api.stop(currentEntryId)
+    this.state.set({ currentEntry: null, history })
   }
 
-  async processUI(job) {
-    const loader = this.root.querySelector('[data-loader]')
-    loader.hidden = false
-
-    try {
-      await job()
-    } finally {
-      loader.hidden = true
-    }
-  }
-
-  reflectState() {
-    // Bail if an input is focused
-    if (hasFocusedInput(this.root)) {
-      return
-    }
-
-    const { projects = [], currentEntry } = this.state.get()
-
-    const projectValues = projects.map(({ id, name }) => [id, name])
-    Array.from(this.root.querySelectorAll('select[name="project"]')).forEach(
-      setSelectValues.bind(null, projectValues)
-    )
-
-    const taskValues = this.getTasksWithUsage()
-    // TODO Make it so choosing one also sets Project
-    Array.from(
-      this.root.querySelectorAll('datalist[name="task__list"]')
-    ).forEach(setSelectValues.bind(null, taskValues))
-
-    const running = Boolean(currentEntry)
-
-    const {
-      task: { value: task } = {},
-      project: { id: projectId } = {},
-      start: startString,
-    } = currentEntry || {}
-
-    let taskValue = ''
-    let projectValue = ''
-    let startValue = ''
-    if (running) {
-      taskValue = task
-      projectValue = projectId
-      startValue = new Date(startString)
-    }
-
-    this.root.querySelector('[name=task]').value = taskValue
-
-    this.root.querySelector('[name=project]').value = projectValue
-
-    const duration = this.root.querySelector('[name=duration]')
-    duration.runningSince = startValue
-
-    this.root.querySelector('[name=stop]').disabled = !running
-
-    this.root.querySelector('[name=change]').disabled = !running
-  }
-
-  getHistoryWithCurrentEntryStopped() {
+  #getHistoryWithCurrentEntryStopped() {
     const { currentEntry, history } = this.state.get()
 
     if (!currentEntry) {
@@ -183,7 +87,7 @@ class CurrentForm {
     ])
   }
 
-  getFormData() {
+  #getFormData() {
     const data = new FormData(this.root)
     return {
       project: data.get('project'),
@@ -213,17 +117,140 @@ class CurrentForm {
       }
     }, {})
 
-    const sortedTasksUsage = Object.fromEntries(
-      Object.entries(tasksUsage)
-        .sort(([, a], [, b]) => b.count - a.count)
-        .map(([taskName, { project }]) => [
-          taskName,
-          { 'data-project': project },
-        ])
-    )
+    const sortedTasksUsage = Object.entries(tasksUsage)
+      .sort(([, a], [, b]) => b.count - a.count)
+      .map(([taskName, { project }]) => ({
+        taskName,
+        project,
+      }))
 
     return sortedTasksUsage
   }
+
+  render() {
+    if (!this.api) return html`test`
+
+    const { projects = [], currentEntry } = this.state.get()
+
+    const taskValue = this.taskValue ?? currentEntry.task?.value
+    const projectValue = this.projectValue ?? currentEntry.project?.id
+
+    return html`
+      <form
+        class="o-form m-loader__wrapper u-authorized"
+        id="current"
+        method="POST"
+        @submit=${this.#handleSubmit}
+      >
+        <p class="m-formElement">
+          <label class="m-formElement__label" for="current_task"> Task </label>
+          <input
+            id="current_task"
+            class="m-formElement__input a-input a-input--text"
+            name="task"
+            type="text"
+            required
+            list="current_task__list"
+            @input=${this.#handleTaskInput}
+            @change=${this.#handleTaskChange}
+            .value=${taskValue}
+          />
+          <datalist id="current_task__list" name="task__list">
+            ${this.getTasksWithUsage().map(
+              (option) =>
+                html`<option
+                  value=${option.taskName}
+                  data-project=${option.project}
+                />`
+            )}
+          </datalist>
+        </p>
+        <p class="m-formElement">
+          <label class="m-formElement__label" for="current_project">
+            Project
+          </label>
+          <select
+            id="current_project"
+            class="m-formElement__input a-input a-input--select"
+            name="project"
+            required
+            .value=${projectValue}
+          >
+            ${projects.map(
+              (option) =>
+                html`<option value=${option.id}>${option.name}</option>`
+            )}
+          </select>
+        </p>
+        <!-- TODO Add required attribute, when implemented -->
+        <p class="u-v3 m-formElement">
+          <label class="m-formElement__label" for="current_start-time">
+            Start time
+          </label>
+          <input
+            id="current_start-time"
+            class="m-formElement__input a-input a-input--date"
+            name="start-time"
+            type="datetime-local"
+          />
+        </p>
+        <dl class="m-timer">
+          <dt
+            class="m-timer__label m-timer__label--day"
+            aria-label="Current task running for"
+          >
+            Current
+          </dt>
+          <dd class="m-timer__value timer__value--day">
+            <time
+              is="tw-duration"
+              class="a-duration"
+              name="duration"
+              precision="s"
+            >
+            </time>
+          </dd>
+        </dl>
+        <div class="m-actions">
+          <button
+            class="a-button a-button--primary m-actions__action m-actions__action--primary"
+            type="submit"
+            name="start"
+          >
+            Start new
+          </button>
+          <button
+            class="a-button
+            m-actions__action"
+            type="button"
+            name="stop"
+            @click=${this.#handleStop}
+          >
+            Stop
+          </button>
+          <button
+            class="u-v3 a-button m-actions__action"
+            type="button"
+            name="split"
+          >
+            Split
+          </button>
+          <button
+            class="a-button m-actions__action"
+            type="button"
+            name="change"
+            @click=${this.#handleChange}
+          >
+            Change
+          </button>
+        </div>
+
+        <div hidden data-loader class="m-loader__animation" aria-live="polite">
+          Things are happening…
+        </div>
+      </form>
+    `
+  }
 }
 
-export default CurrentForm
+customElements.define('tw-current-form', CurrentForm)

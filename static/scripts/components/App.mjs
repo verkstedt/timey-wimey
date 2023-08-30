@@ -2,7 +2,7 @@ import areEqual from '../utils/areEqual.mjs'
 import hasFocusedInput from '../utils/hasFocusedInput.mjs'
 
 import './LoginForm.mjs'
-import CurrentForm from './CurrentForm.mjs'
+import './CurrentForm.mjs'
 import './History.mjs'
 
 class App {
@@ -33,7 +33,7 @@ class App {
     this.handlePageReactivation = this.handlePageReactivation.bind(this)
     this.refreshHistory = this.refreshHistory.bind(this)
 
-    this.currentForm = new CurrentForm(this.state, this.api)
+    // this.currentForm = new CurrentForm(this.state, this.api)
 
     this.state.addEventListener(this.handleStateChange)
 
@@ -49,7 +49,11 @@ class App {
     loginForm.state = this.state
     loginForm.api = this.api
 
-    this.currentForm.bind(this.root.querySelector('#current'))
+    const currentForm = this.root.querySelector('tw-current-form')
+    currentForm.state = this.state
+    currentForm.api = this.api
+
+    // this.currentForm.bind(this.root.querySelector('#current'))
 
     const history = this.root.querySelector('tw-history')
     history.api = this.api
@@ -155,10 +159,6 @@ class App {
     this.root.dataset.authorized = authorized ? 'true' : 'false'
 
     this.loadingMessage.hidden = !this.isLoading
-
-    if (authorized) {
-      this.currentForm.reflectState()
-    }
   }
 }
 
