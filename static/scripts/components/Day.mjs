@@ -1,111 +1,103 @@
+import { html } from 'lit'
+
+import AppElement from './AppElement.mjs'
+
+import './Break.mjs'
 import './Entry.mjs'
-import Break from './Break.mjs'
 
-// FIXME Util
-function createDayNameFormatter() {
-  const dayNameFormatter = new Intl.DateTimeFormat(undefined, {
-    day: 'numeric',
-    weekday: 'long',
-  })
+const dayNameFormatter = new Intl.DateTimeFormat(undefined, {
+  day: 'numeric',
+  weekday: 'long',
+})
 
-  return {
-    format: (date) => {
-      const relDate = new Date()
-      if (date.toDateString() === relDate.toDateString()) {
-        return 'Today'
-      }
-
-      relDate.setDate(relDate.getDate() - 1)
-      if (date.toDateString() === relDate.toDateString()) {
-        return 'Yesterday'
-      }
-
-      return dayNameFormatter.format(date)
-    },
-  }
-}
-
-class Day {
-  state
-
-  api
-
-  refreshHistory
-
-  dayDateString
-
-  root = null
-
-  entries = []
-
-  constructor(state, api, refreshHistory, dayDateString) {
-    this.state = state
-    this.api = api
-    this.refreshHistory = refreshHistory
-    this.dayDateString = dayDateString
+class Day extends AppElement {
+  static properties = {
+    state: { state: true, attribute: false },
+    api: { state: true, attribute: false },
+    refreshHistory: { state: true, attribute: false },
+    dayDateString: { type: String, state: true, attribute: true },
   }
 
-  async bind(root, breakTpl) {
-    this.root = root
-    this.breakTpl = breakTpl
-
-    this.reflectState()
-  }
-
-  async unbind() {
-    this.entries.forEach((entry) => entry.unbind())
-
-    this.root = null
-    this.breakTpl = null
-  }
-
-  reflectState() {
+  render() {
     const { history } = this.state.get()
-
-    const dayNameFormatter = createDayNameFormatter()
-
-    const dayNameElement = this.root.querySelector('[name="day-name"]')
-    dayNameElement.textContent = dayNameFormatter.format(
-      new Date(this.dayDateString)
-    )
-
     const dayHistoryEntries = history
       .filter(
         (entry) => entry.end && entry.start.startsWith(this.dayDateString)
       )
       .sort((a, b) => new Date(b.start) - new Date(a.start))
 
-    const totalMs = dayHistoryEntries
-      .map(({ start, end }) => new Date(end) - new Date(start))
-      .reduce((carry, duration) => carry + duration, 0)
-    this.root.querySelector('[name="total-value"]').dateTime = `PT${Math.round(
-      totalMs / 1000
-    )}S`
-
-    const entriesRoot = this.root.querySelector('[name="entries"]')
-    const breakTplElement = this.breakTpl.content.children[0]
-    const entries = document.createDocumentFragment()
-    let prevEntryId
-    dayHistoryEntries.forEach(({ id: entryId }) => {
-      const entryBreakElement = document.importNode(breakTplElement, true)
-      const entryBreak = new Break(this.state, prevEntryId, entryId)
-      this.entries.push(entryBreak)
-      entryBreak.bind(entryBreakElement)
-      entries.appendChild(entryBreakElement)
-
-      // TODO <tw-entry .state={this.state} .api={this.api} .refreshHistory={this.refreshHistory} .entryId={entryId} />
-      const entry = document.createElement('tw-entry')
-      entry.state = this.state
-      entry.api = this.api
-      entry.refreshHistory = this.refreshHistory
-      entry.entryId = entryId
-      entries.appendChild(entry)
-
-      prevEntryId = entryId
-    })
-    entriesRoot.textContent = ''
-    entriesRoot.appendChild(entries)
+    return html`
+      <section class="o-day">
+        <h3 class="u-stickyHeader o-day__header">
+          <time name="day-name">
+            ${dayNameFormatter.format(new Date(this.dayDateString))}
+          </time>
+        </h3>
+        <dl class="u-stickyHeader o-progressTimer o-progressTimer--day">
+          <div class="m-timer">
+            <dt
+              class="m-timer__label m-timer__label--day o-progressTimer__label o-progressTimer__label--from"
+              aria-label="Time logged for 26th April"
+            >
+              Total
+            </dt>
+            <dd
+              class="m-timer__value m-timer__value--day o-progressTimer__value o-progressTimer__value--from"
+            >
+              <time
+                is="tw-duration"
+                name="total-value"
+                class="a-duration"
+                .dateTime=${`PT${Math.round(
+                  dayHistoryEntries
+                    .map(({ start, end }) => new Date(end) - new Date(start))
+                    .reduce((carry, duration) => carry + duration, 0) / 1000
+                )}S`}
+              ></time>
+            </dd>
+          </div>
+          <div class="m-timer">
+            <dt
+              class="m-timer__label m-timer__label--day o-progressTimer__label o-progressTimer__label--to"
+              aria-label="time required for 1st of April"
+            >
+              out of
+            </dt>
+            <dd
+              class="m-timer__value m-timer__value--day o-progressTimer__value o-progressTimer__value--to"
+            >
+              <!-- TODO Obtain real value -->
+              <time
+                is="tw-duration"
+                name="total-expected"
+                class="a-duration"
+                datetime="PT8H"
+                precision="m"
+              ></time>
+            </dd>
+          </div>
+        </dl>
+        <ol name="entries" reversed class="o-entryList">
+          ${dayHistoryEntries.map(({ id: entryId }, index) => {
+            const prevEntryId = dayHistoryEntries[index - 1]?.id
+            return html`
+              <tw-break
+                .state=${this.state}
+                .prevEntryId=${prevEntryId}
+                .entryId=${entryId}
+              />
+              <tw-entry
+                .state=${this.state}
+                .api=${this.api}
+                .refreshHistory=${this.refreshHistory}
+                .entryId=${entryId}
+              />
+            `
+          })}
+        </ol>
+      </section>
+    `
   }
 }
 
-export default Day
+customElements.define('tw-day', Day)

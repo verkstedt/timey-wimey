@@ -42,7 +42,8 @@ class Entry extends AppElement {
   }
 
   render() {
-    const entry = this.state.state.history.find((e) => e.id === this.entryId)
+    const { history } = this.state.get()
+    const entry = history.find((e) => e.id === this.entryId)
 
     return html`
       <li class="o-entryList__item o-entryList__item--entry m-entry">
