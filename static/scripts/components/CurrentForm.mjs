@@ -13,6 +13,10 @@ class CurrentForm extends AppElement {
   #handleTaskInput(event) {
     this.taskValue = event.target.value
   }
+  #handleProjectInput(event) {
+    this.projectValue = event.target.value
+  }
+
 
   #handleTaskChange() {
     if (this.taskValue === '') {
@@ -35,29 +39,33 @@ class CurrentForm extends AppElement {
   #handleSubmit(event) {
     event.preventDefault()
 
-    const { project, task } = this.#getFormData()
-
     const history = this.#getHistoryWithCurrentEntryStopped()
-    const currentEntry = this.api.start(project, task)
+    const currentEntry = this.api.start(this.projectValue, this.taskValue)
     this.state.set({ currentEntry, history })
   }
 
-  #handleChange(event) {
-    event.preventDefault()
-
-    const { project, task } = this.#getFormData()
+  async #handleChange(event) {
+    console.log(this.state.get())
     const {
+      currentEntry,
       currentEntry: { id: currentEntryId },
     } = this.state.get()
     if (currentEntryId == null) {
       throw new Error('Cannot change — no task running.')
     }
 
-    const currentEntry = this.api.update(currentEntryId, {
-      project,
-      task,
+    const taskValue = this.taskValue ?? (currentEntry?.task?.value || '') 
+    const projectValue = this.projectValue ?? currentEntry?.project?.id
+
+    const newCurrentEntry = await this.api.update(currentEntryId, {
+      project: projectValue,
+      task: taskValue,
     })
-    this.state.set({ currentEntry })
+
+    console.log(projectValue)
+    console.log(taskValue)
+    console.log(currentEntryId, newCurrentEntry)
+    this.state.set({ currentEntry: newCurrentEntry })
   }
 
   #handleStop(event) {
@@ -67,6 +75,7 @@ class CurrentForm extends AppElement {
       currentEntry: { id: currentEntryId },
     } = this.state.get()
 
+    console.log(currentEntryId)
     const history = this.#getHistoryWithCurrentEntryStopped()
     this.api.stop(currentEntryId)
     this.state.set({ currentEntry: null, history })
@@ -85,14 +94,6 @@ class CurrentForm extends AppElement {
         end: new Date().toISOString(),
       },
     ])
-  }
-
-  #getFormData() {
-    const data = new FormData(this.root)
-    return {
-      project: data.get('project'),
-      task: data.get('task'),
-    }
   }
 
   getTasksWithUsage() {
@@ -131,9 +132,11 @@ class CurrentForm extends AppElement {
     if (!this.api) return html`test`
 
     const { projects = [], currentEntry } = this.state.get()
+    // console.log(this.state.get())
 
-    const taskValue = this.taskValue ?? currentEntry.task?.value
-    const projectValue = this.projectValue ?? currentEntry.project?.id
+    // console.log(this.state.get())
+    const taskValue = this.taskValue ?? (currentEntry?.task?.value || '') 
+    const projectValue = this.projectValue ?? currentEntry?.project?.id
 
     return html`
       <form
@@ -175,7 +178,8 @@ class CurrentForm extends AppElement {
             name="project"
             required
             .value=${projectValue}
-          >
+            @input=${this.#handleProjectInput}
+              >
             ${projects.map(
               (option) =>
                 html`<option value=${option.id}>${option.name}</option>`
@@ -207,7 +211,7 @@ class CurrentForm extends AppElement {
               class="a-duration"
               name="duration"
               precision="s"
-            >
+              >
             </time>
           </dd>
         </dl>
@@ -225,6 +229,7 @@ class CurrentForm extends AppElement {
             type="button"
             name="stop"
             @click=${this.#handleStop}
+            ?disabled=${!currentEntry}
           >
             Stop
           </button>
@@ -240,6 +245,7 @@ class CurrentForm extends AppElement {
             type="button"
             name="change"
             @click=${this.#handleChange}
+            ?disabled=${!currentEntry}
           >
             Change
           </button>
