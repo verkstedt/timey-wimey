@@ -1,93 +1,74 @@
-import Day from './Day.mjs'
+import { html } from 'lit'
 
-class Month {
-  state
+import AppElement from './AppElement.mjs'
 
-  api
+import './Day.mjs'
 
-  refreshHistory
+const monthNameFormatter = new Intl.DateTimeFormat(undefined, {
+  month: 'long',
+})
 
-  monthDateString
-
-  root = null
-
-  dayTpl = null
-
-  days = []
-
-  constructor(state, api, refreshHistory, monthDateString) {
-    this.state = state
-    this.api = api
-    this.refreshHistory = refreshHistory
-    this.monthDateString = monthDateString
+class Month extends AppElement {
+  static properties = {
+    state: { state: true, attribute: false },
+    api: { state: true, attribute: false },
+    refreshHistory: { state: true, attribute: false },
+    monthDateString: { type: String, state: true, attribute: true },
   }
 
-  async bind(root, dayTpl) {
-    this.root = root
-    this.dayTpl = dayTpl
-
-    this.reflectState()
-  }
-
-  async unbind() {
-    this.days.forEach((day) => day.unbind())
-
-    this.root = null
-    this.dayTpl = null
-  }
-
-  reflectState() {
-    const document = this.root.ownerDocument
+  render() {
     const { history } = this.state.get()
     const monthHistoryEntries = history.filter(
       (entry) => entry.end && entry.start.startsWith(this.monthDateString)
     )
 
-    const monthNameFormatter = new Intl.DateTimeFormat(undefined, {
-      month: 'long',
-    })
-
-    const monthName = monthNameFormatter.formatToParts(
-      new Date(this.monthDateString)
-    )[0].value
-
-    const monthNameElement = this.root.querySelector('[name="month-name"]')
-    monthNameElement.dateTime = this.monthDateString
-    monthNameElement.textContent = monthName
-
-    const totalMs = monthHistoryEntries
-      .map(({ start, end }) => new Date(end) - new Date(start))
-      .reduce((carry, duration) => carry + duration, 0)
-    this.root.querySelector('[name="total-value"]').dateTime = `PT${Math.round(
-      totalMs / 1000
-    )}S`
-
-    const dayKeys = new Set()
-    monthHistoryEntries.forEach((entry) => {
-      // / FIXME Should always be String
-      const start =
-        entry.start instanceof Date ? entry.start.toISOString() : entry.start
-      const dayKey = start.split('T')[0]
-      dayKeys.add(dayKey)
-    })
-    const daysRoot = this.root.querySelector('[name="days"]')
-    const dayTplElement = this.dayTpl.content.children[0]
-    const days = document.createDocumentFragment()
-    Array.from(dayKeys)
-      .sort()
-      .reverse()
-      .forEach((dayKey) => {
-        const dayElement = document.importNode(dayTplElement, true)
-        const day = new Day(this.state, this.api, this.refreshHistory, dayKey)
-        this.days.push(day)
-        const breakTpl = dayElement.querySelector('[name="break-tpl"]')
-        day.bind(dayElement, breakTpl)
-        days.appendChild(dayElement)
-      })
-
-    daysRoot.textContent = ''
-    daysRoot.appendChild(days)
+    return html`
+      <section class="o-month">
+        <h2 class="u-stickyHeader o-month__header">
+          <time name="month-name" .dateTime=${this.monthDateString}>
+            ${monthNameFormatter.formatToParts(
+              new Date(this.monthDateString)
+            )[0].value}
+          </time>
+        </h2>
+        <details open>
+          <summary class="a-detailsSummary">
+            <dl class="o-progressTimer">
+              <div class="m-timer">
+                <dt class="m-timer__label m-timer__label--month">Total</dt>
+                <dd class="m-timer__value m-timer__value--month">
+                  <time
+                    is="tw-duration"
+                    name="total-value"
+                    class="a-duration"
+                    .dateTime=${`PT${Math.round(
+                      monthHistoryEntries
+                        .map(
+                          ({ start, end }) => new Date(end) - new Date(start)
+                        )
+                        .reduce((carry, duration) => carry + duration, 0) / 1000
+                    )}S`}
+                  ></time>
+                </dd>
+              </div>
+            </dl>
+          </summary>
+          <div name="days">
+            ${monthHistoryEntries.map(
+              ({ id: entryId }) => html`
+                <tw-entry
+                  .state=${this.state}
+                  .api=${this.api}
+                  .refreshHistory=${this.refreshHistory}
+                  .entryId=${entryId}
+                />
+              `
+            )}
+          </div>
+        </details>
+      </section>
+    `
   }
 }
 
-export default Month
+customElements.define('tw-month', Month)
