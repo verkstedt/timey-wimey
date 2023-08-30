@@ -24,11 +24,11 @@ class LoginForm extends AppElement {
     if (!this.api) return html`test`
 
     return html`
-    <form
-      class="o-form m-loader__wrapper u-unauthorized"
-      id="login"
-      method="POST"
-      @submit=${this.#handleSubmit}
+      <form
+        class="o-form m-loader__wrapper u-unauthorized"
+        id="login"
+        method="POST"
+        @submit=${this.#handleSubmit}
       >
         <p class="m-formElement">
           <label class="m-formElement__label" for="login_login"> E-Mail </label>
