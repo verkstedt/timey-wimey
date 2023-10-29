@@ -1,0 +1,5 @@
+.m-headerTitle {
+    justify-content: flex-start;
+    flex-grow: 1;
+    font-size: 36px;
+}
