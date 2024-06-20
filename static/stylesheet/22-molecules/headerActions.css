@@ -1,0 +1,10 @@
+.m-headerActions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    text-transform: capitalize;
+}
+
+.m-headerActions > div {
+    margin: 0px 3px;
+}
