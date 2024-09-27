@@ -16,6 +16,15 @@ Alternative UI for [clockodo].
 
 - Clean and minimalistic.
 
+## Deployment
+
+```sh
+# preview
+npx vercel
+# production
+npx vercel --prod
+```
+
 ## Credits
 
 Created during [verkstedt]’s open Fridays.
