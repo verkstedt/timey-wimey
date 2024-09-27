@@ -1,5 +1,7 @@
 import { html } from 'lit'
 
+import insertWordBreaks from '../utils/insertWordBreaks.mjs'
+
 import AppElement from './AppElement.mjs'
 
 const timeFormatter = new Intl.DateTimeFormat(undefined, {
@@ -47,10 +49,12 @@ class Entry extends AppElement {
 
     return html`
       <li class="o-entryList__item o-entryList__item--entry m-entry">
-        <h4 name="entry-task" class="m-entry__task">${entry.task.value}</h4>
+        <h4 name="entry-task" class="m-entry__task">
+          ${insertWordBreaks(entry.task.value)}
+        </h4>
         <span class="u-sr">filed under</span>
         <span name="entry-project" class="m-entry__project">
-          ${entry.project.name}
+          ${insertWordBreaks(entry.project.name)}
         </span>
         <div class="m-entry__times">
           <div class="m-entry__duration">
