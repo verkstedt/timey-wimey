@@ -23,15 +23,37 @@ const API_BASE = "http://localhost:8010/";
  * @property {string} JiraApiIssue
  */
 
-const EntryListItem = ({ worklog }) => html`
-  <div>
-    <span>${worklog.date}</span>
-    <span>${worklog.description}</span>
+/** @param {Worklog} worklog */
+const EntryListItem = ({ worklog }) => {
+  const startDate = new Date(worklog.startDate + "T" + worklog.startTime);
+  const endDate = new Date(
+    startDate.getTime() + worklog.timeSpentSeconds * 1_000
+  );
+
+  const durationFormatter = new Intl.DurationFormat(navigator.language, {
+    style: "narrow",
+  });
+
+  const hours = Math.floor(worklog.timeSpentSeconds / 3600);
+  const minutes = Math.floor((worklog.timeSpentSeconds % 3600) / 60);
+  const seconds = worklog.timeSpentSeconds % 60;
+  const duration = { hours, minutes, seconds };
+
+  return html`
+    <div className="entry-list-item">
+      <p class="entry-list-item__description">${worklog.description}</p>
+      <p class="entry-list-item__time">
+        ${startDate.toLocaleTimeString()} — ${endDate.toLocaleTimeString()}
+      </p>
+      <p class="entry-list-item__duration">
+        ${durationFormatter.format(duration)}
+      </p>
   </div>
 `;
+};
 
 const EntryList = ({ worklogs }) => html`
-  <ol>
+  <ol reversed>
     ${worklogs.map(
       (worklog) => html`
         <li>
@@ -41,6 +63,61 @@ const EntryList = ({ worklogs }) => html`
     )}
   </ol>
 `;
+
+const DayList = ({ worklogs }) => {
+  const worklogsByDay = worklogs.reduce((acc, worklog) => {
+    const date = new Date(worklog.startDate);
+    const key = date.toISOString().split("T")[0];
+    acc[key] = acc[key] || [];
+    acc[key].push(worklog);
+    return acc;
+  }, {});
+
+  const dateFormatter = new Intl.DateTimeFormat(navigator.language, {
+    dateStyle: "full",
+  });
+
+  return html`
+    ${Object.entries(worklogsByDay).map(([day, worklogs]) => {
+      const date = new Date(day);
+      const formattedDate = dateFormatter.format(date);
+      return html`
+        <section>
+          <h4>${formattedDate}</h4>
+          <${EntryList} worklogs=${worklogs} />
+        </section>
+      `;
+    })}
+  `;
+};
+
+const MonthList = ({ worklogs }) => {
+  const worklogsByMonth = worklogs.reduce((acc, worklog) => {
+    const date = new Date(worklog.startDate);
+    const key = `${date.getFullYear()}-${date.getMonth() + 1}`;
+    acc[key] = acc[key] || [];
+    acc[key].push(worklog);
+    return acc;
+  }, {});
+
+  const monthFormatter = new Intl.DateTimeFormat(navigator.language, {
+    month: "long",
+  });
+
+  return html`
+    ${Object.entries(worklogsByMonth).map(([monthKey, worklogs]) => {
+      const [year, month] = monthKey.split("-");
+      const date = new Date(year, month - 1);
+      const monthName = monthFormatter.format(date);
+      return html`
+        <section>
+          <h3>${monthName}</h3>
+          <${DayList} worklogs=${worklogs} />
+        </section>
+      `;
+    })}
+  `;
+};
 
 const LoginToJira = () => {
   return html`
@@ -59,11 +136,6 @@ const App = () => {
     JSON.parse(localStorage.getItem("jiraAccess") || "null")
   );
   const [worklogs, setWorklogs] = useState(undefined);
-
-  console.log({
-    jiraAccess,
-    code,
-  });
 
   useEffect(() => {
     if (jiraAccess) {
@@ -104,7 +176,9 @@ const App = () => {
       const url = new URL("4/worklogs", API_BASE);
       url.searchParams.set("from", startDate.toISOString().split("T")[0]);
       url.searchParams.set("to", endDate.toISOString().split("T")[0]);
-      url.searchParams.set("limit", "50");
+      // “infinity”
+      url.searchParams.set("limit", 1_000_000);
+      url.searchParams.set("orderBy", "START_DATE_TIME");
       const res = await fetch(url, {
         headers: {
           Authorization: `Bearer ${jiraAccess.access_token}`,
@@ -112,7 +186,6 @@ const App = () => {
       });
       const newWorklogs = await res.json();
       setWorklogs(newWorklogs.results);
-      console.log(newWorklogs);
     }
   }, [jiraAccess]);
 
@@ -123,7 +196,7 @@ const App = () => {
   } else {
     return html`
       <h1>timey-wimey</h1>
-      <${EntryList} worklogs=${worklogs} />
+      <${MonthList} worklogs=${worklogs} />
     `;
   }
 };
