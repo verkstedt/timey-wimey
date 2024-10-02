@@ -23,6 +23,17 @@ const API_BASE = "http://localhost:8010/";
  * @property {string} JiraApiIssue
  */
 
+const calculateTotalDuration = (worklogs) => {
+  const totalSeconds = worklogs.reduce(
+    (total, worklog) => total + worklog.timeSpentSeconds,
+    0
+  );
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return { hours, minutes, seconds };
+};
+
 /** @param {Worklog} worklog */
 const EntryListItem = ({ worklog }) => {
   const startDate = new Date(worklog.startDate + "T" + worklog.startTime);
@@ -77,14 +88,35 @@ const DayList = ({ worklogs }) => {
     dateStyle: "full",
   });
 
+  const durationFormatter = new Intl.DurationFormat(navigator.language, {
+    style: "narrow",
+  });
+
   return html`
-    ${Object.entries(worklogsByDay).map(([day, worklogs]) => {
+    ${Object.entries(worklogsByDay).map(([day, dayWorklogs]) => {
       const date = new Date(day);
       const formattedDate = dateFormatter.format(date);
+      const totalDuration = calculateTotalDuration(dayWorklogs);
+      const totalHours =
+        totalDuration.hours +
+        totalDuration.minutes / 60 +
+        totalDuration.seconds / 3600;
+      const expectedHours = 8;
+      const durationClass =
+        totalHours >= expectedHours
+          ? "duration-total--sufficient"
+          : "duration-total--insufficient";
+      const expectedDuration = { hours: expectedHours, minutes: 0, seconds: 0 };
       return html`
         <section>
+          <header class="header">
           <h4>${formattedDate}</h4>
-          <${EntryList} worklogs=${worklogs} />
+            <p class="duration-total ${durationClass}">
+              Total: ${durationFormatter.format(totalDuration)} /
+              ${durationFormatter.format(expectedDuration)}
+            </p>
+          </header>
+          <${EntryList} worklogs=${dayWorklogs} />
         </section>
       `;
     })}
@@ -102,17 +134,42 @@ const MonthList = ({ worklogs }) => {
 
   const monthFormatter = new Intl.DateTimeFormat(navigator.language, {
     month: "long",
+    year: "numeric",
+  });
+
+  const durationFormatter = new Intl.DurationFormat(navigator.language, {
+    style: "narrow",
   });
 
   return html`
-    ${Object.entries(worklogsByMonth).map(([monthKey, worklogs]) => {
+    ${Object.entries(worklogsByMonth).map(([monthKey, monthWorklogs]) => {
       const [year, month] = monthKey.split("-");
       const date = new Date(year, month - 1);
       const monthName = monthFormatter.format(date);
+      const totalDuration = calculateTotalDuration(monthWorklogs);
+      const workDays = new Set(
+        monthWorklogs.map((worklog) => worklog.startDate)
+      ).size;
+      const totalHours =
+        totalDuration.hours +
+        totalDuration.minutes / 60 +
+        totalDuration.seconds / 3600;
+      const expectedHours = workDays * 8;
+      const durationClass =
+        totalHours >= expectedHours
+          ? "duration-total--sufficient"
+          : "duration-total--insufficient";
+      const expectedDuration = { hours: expectedHours, minutes: 0, seconds: 0 };
       return html`
         <section>
+          <header class="header">
           <h3>${monthName}</h3>
-          <${DayList} worklogs=${worklogs} />
+            <p class="duration-total ${durationClass}">
+              Total: ${durationFormatter.format(totalDuration)} /
+              ${durationFormatter.format(expectedDuration)}
+            </p>
+          </header>
+          <${DayList} worklogs=${monthWorklogs} />
         </section>
       `;
     })}
@@ -136,6 +193,11 @@ const App = () => {
     JSON.parse(localStorage.getItem("jiraAccess") || "null")
   );
   const [worklogs, setWorklogs] = useState(undefined);
+
+  const handleLogOut = () => {
+    localStorage.clear();
+    window.location.reload();
+  };
 
   useEffect(() => {
     if (jiraAccess) {
@@ -195,8 +257,10 @@ const App = () => {
     return html`<div>Loading…</div>`;
   } else {
     return html`
-      <h1>timey-wimey</h1>
+      <button type="button" onClick="${handleLogOut}">Log out</button>
+      <main>
       <${MonthList} worklogs=${worklogs} />
+      </main>
     `;
   }
 };
