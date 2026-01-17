@@ -1,0 +1,7 @@
+.o-appbar {
+    display: flex;
+    border-bottom: 1px dashed grey;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    align-items: center;
+}

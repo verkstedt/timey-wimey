@@ -1,6 +1,7 @@
 import areEqual from '../utils/areEqual.mjs'
 import hasFocusedInput from '../utils/hasFocusedInput.mjs'
 
+import "./Appbar.mjs"
 import './LoginForm.mjs'
 import './CurrentForm.mjs'
 import './History.mjs'
@@ -61,6 +62,10 @@ class App {
     history.state = this.state
 
     // TODO Log out
+    const appbar = this.root.querySelector('#appbar')
+    const twAppbar = document.createElement('tw-appbar')
+    twAppbar.state = this.state
+    appbar.appendChild(twAppbar)
 
     this.reflectState()
 
